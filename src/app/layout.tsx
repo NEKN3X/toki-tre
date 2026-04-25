@@ -30,7 +30,7 @@ export default function RootLayout({
     >
       <body>
         <div className="container mx-auto flex min-h-full w-full flex-col gap-8 p-8">
-          <div className="text-center">
+          <div className="text-center select-none">
             <h1 className="text-2xl font-black text-blue-600">SceneDo</h1>
             <p className="text-blue-600 opacity-70">Make your flow.</p>
           </div>
