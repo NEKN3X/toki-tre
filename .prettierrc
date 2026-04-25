@@ -10,8 +10,8 @@
   ],
   "tailwindFunctions": ["clsx", "twMerge", "tw", "cn"],
   "tailwindAttributes": ["className"],
-  "tailwindPreserveWhitespace": true,
-  "tailwindPreserveDuplicates": true,
+  "tailwindPreserveWhitespace": false,
+  "tailwindPreserveDuplicates": false,
   "importOrder": [
     "<BUILTIN_MODULES>",
     "<THIRD_PARTY_MODULES>",

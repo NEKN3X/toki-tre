@@ -1,5 +1,11 @@
-const data = [
+"use client";
+
+import SessionCard, { SessionItem } from "@/components/session-card";
+import { useState } from "react";
+
+const data: SessionItem[] = [
   {
+    id: "waking-up",
     icon: "🌄",
     title: "After waking up",
     description: "Get ready for the day",
@@ -18,6 +24,7 @@ const data = [
     ],
   },
   {
+    id: "home-workout",
     icon: "🏋️",
     title: "Home workout",
     description: "",
@@ -37,6 +44,21 @@ const data = [
     ],
   },
   {
+    id: "neck-hurt",
+    icon: "💫",
+    title: "Neck hurt",
+    description: "",
+    playlistId: "PLQ0m31Gjddkt47uNY32OUWrWmNrD_998V",
+  },
+  {
+    id: "neck-hurt2",
+    icon: "💫",
+    title: "Neck hurt",
+    description: "",
+    playlistId: "PLQ0m31Gjddkt47uNY32OUWrWmNrD_998V",
+  },
+  {
+    id: "neck-hurt3",
     icon: "💫",
     title: "Neck hurt",
     description: "",
@@ -45,5 +67,19 @@ const data = [
 ];
 
 export default function Home() {
-  return <div>hello</div>;
+  const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+
+  const handleComplete = (id: string) => {
+    setCompletedIds((prev) => new Set(prev).add(id));
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
+        {data.map((item) => (
+          <SessionCard key={item.id} item={item} onComplete={handleComplete} />
+        ))}
+      </div>
+    </div>
+  );
 }
