@@ -167,7 +167,6 @@ export default function SessionCard({
               {!isComplete && progress !== item.steps?.length && (
                 <Button
                   className="flex cursor-pointer"
-                  variant={"outline"}
                   onClick={() => dispatchProgress({ type: "next" })}
                 >
                   <span>Next</span>
