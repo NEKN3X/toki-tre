@@ -1,7 +1,29 @@
 "use client";
 
 import SessionCard, { SessionItem } from "@/components/session-card";
-import { useState } from "react";
+import SessionDialog from "@/components/session-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { cn } from "@/lib/utils";
+import confetti from "canvas-confetti";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { forwardRef, useState } from "react";
 
 const data: SessionItem[] = [
   {
@@ -67,19 +89,50 @@ const data: SessionItem[] = [
 ];
 
 export default function Home() {
-  const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
-
-  const handleComplete = (id: string) => {
-    setCompletedIds((prev) => new Set(prev).add(id));
-  };
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedSession, setSelectedSession] = useState<SessionItem>();
+  const [closeTimer, setCloseTimer] = useState<NodeJS.Timeout>();
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
-        {data.map((item) => (
-          <SessionCard key={item.id} item={item} onComplete={handleComplete} />
-        ))}
+    <Dialog
+      open={dialogOpen}
+      onOpenChange={(open) => {
+        clearTimeout(closeTimer);
+        setDialogOpen(open);
+      }}
+    >
+      <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
+          {data.map((session) => (
+            <DialogTrigger
+              key={session.id}
+              className="rounded-xl"
+              onClick={() => setSelectedSession(session)}
+            >
+              <SessionCard session={session} />
+            </DialogTrigger>
+          ))}
+        </div>
       </div>
-    </div>
+      <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
+        {selectedSession && (
+          <SessionDialog
+            session={selectedSession}
+            onComplete={() => {
+              confetti({
+                particleCount: 100,
+                startVelocity: 25,
+                spread: 360,
+              });
+              setCloseTimer(
+                setTimeout(() => {
+                  setDialogOpen(false);
+                }, 2500),
+              );
+            }}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
