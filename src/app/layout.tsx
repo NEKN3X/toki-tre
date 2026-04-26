@@ -14,7 +14,7 @@ const mono = M_PLUS_1_Code({
 });
 
 export const metadata: Metadata = {
-  title: "SceneDo",
+  title: "IfThenBuddy",
   description: "",
 };
 
@@ -31,8 +31,8 @@ export default function RootLayout({
       <body>
         <div className="container mx-auto flex min-h-full w-full flex-col gap-8 p-8">
           <div className="text-center select-none">
-            <h1 className="text-2xl font-black text-blue-600">SceneDo</h1>
-            <p className="text-blue-600 opacity-70">Make your flow.</p>
+            <h1 className="text-2xl font-black">IfThenBuddy</h1>
+            <p>習慣化のお供に</p>
           </div>
           <Separator />
           <main>{children}</main>
