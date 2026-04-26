@@ -1,4 +1,3 @@
-import confetti from "canvas-confetti";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useMemo, useReducer, useState } from "react";
 import { SessionItem } from "./session-card";

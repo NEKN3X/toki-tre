@@ -2,28 +2,9 @@
 
 import SessionCard, { SessionItem } from "@/components/session-card";
 import SessionDialog from "@/components/session-dialog";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import confetti from "canvas-confetti";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 
 const data: SessionItem[] = [
   {
