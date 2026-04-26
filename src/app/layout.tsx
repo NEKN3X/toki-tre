@@ -14,7 +14,7 @@ const mono = M_PLUS_1_Code({
 });
 
 export const metadata: Metadata = {
-  title: "Toki-Tre",
+  title: "SceneDo",
   description: "",
 };
 
