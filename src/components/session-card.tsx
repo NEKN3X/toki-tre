@@ -4,7 +4,7 @@ export type SessionStep = {
   icon: string;
   title: string;
   description: string;
-  videoId?: string;
+  youtubeUrl?: string;
 };
 
 export type SessionItem = {
@@ -12,8 +12,7 @@ export type SessionItem = {
   icon: string;
   title: string;
   description: string;
-  steps?: SessionStep[];
-  playlistId?: string;
+  steps: SessionStep[];
 };
 
 export default function SessionCard({ session }: { session: SessionItem }) {

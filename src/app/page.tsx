@@ -22,7 +22,7 @@ const data: SessionItem[] = [
         icon: "🔥",
         title: "Stretching",
         description: "",
-        videoId: "ihba9Lw0tv4",
+        youtubeUrl: "https://www.youtube.com/watch?v=ihba9Lw0tv4",
       },
     ],
   },
@@ -36,36 +36,15 @@ const data: SessionItem[] = [
         icon: "🔥",
         title: "Warm up",
         description: "",
-        videoId: "c0VxUFHdYzs",
+        youtubeUrl: "https://www.youtube.com/watch?v=c0VxUFHdYzs",
       },
       {
         icon: "🏋️",
         title: "Full body workout",
         description: "",
-        videoId: "icoe6C2E-aY",
+        youtubeUrl: "https://www.youtube.com/watch?v=icoe6C2E-aY",
       },
     ],
-  },
-  {
-    id: "neck-hurt",
-    icon: "💫",
-    title: "Neck hurt",
-    description: "",
-    playlistId: "PLQ0m31Gjddkt47uNY32OUWrWmNrD_998V",
-  },
-  {
-    id: "neck-hurt2",
-    icon: "💫",
-    title: "Neck hurt",
-    description: "",
-    playlistId: "PLQ0m31Gjddkt47uNY32OUWrWmNrD_998V",
-  },
-  {
-    id: "neck-hurt3",
-    icon: "💫",
-    title: "Neck hurt",
-    description: "",
-    playlistId: "PLQ0m31Gjddkt47uNY32OUWrWmNrD_998V",
   },
 ];
 
@@ -83,7 +62,7 @@ export default function Home() {
       }}
     >
       <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
           {data.map((session) => (
             <DialogTrigger
               key={session.id}
@@ -110,6 +89,9 @@ export default function Home() {
                   setDialogOpen(false);
                 }, 2500),
               );
+            }}
+            onPrev={() => {
+              clearTimeout(closeTimer);
             }}
           />
         )}
