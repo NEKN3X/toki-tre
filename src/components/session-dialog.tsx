@@ -90,6 +90,7 @@ export default function SessionDialog({
             className="cursor-pointer"
             variant={"outline"}
             disabled={progress === 0}
+            size={"icon"}
             onClick={() => {
               onPrev?.();
               dispatchProgress({ type: "prev" });
@@ -128,6 +129,7 @@ export default function SessionDialog({
             className="cursor-pointer"
             variant={"outline"}
             disabled={isComplete}
+            size={"icon"}
             onClick={() => {
               onNext?.();
               dispatchProgress({ type: "next" });
