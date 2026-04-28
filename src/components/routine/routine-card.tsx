@@ -17,7 +17,7 @@ export type Routine = {
 
 export default function SessionCard({ session }: { session: Routine }) {
   return (
-    <Card className="h-36 cursor-pointer text-left select-none hover:shadow-md focus:ring">
+    <Card className="h-36 cursor-pointer text-left select-none hover:opacity-80 hover:shadow-md focus:ring">
       <CardHeader>
         <span className="text-4xl">{session.icon}</span>
         <CardTitle className="text-lg">{session.title}</CardTitle>
