@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import * as z from "zod";
+import { createRoutine } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,44 +26,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { routineSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { FileText, Plus, Trash2, Video } from "lucide-react";
-import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useAction } from "next-safe-action/hooks";
+import { useState } from "react";
 import type { Control } from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Separator } from "../ui/separator";
 
-const actionSchema = z
-  .object({
-    title: z.string().min(1, "アクション名を入力してください"),
-    icon: z.string().min(1, "アイコンを選択"),
-    type: z.enum(["TEXT", "VIDEO"]),
-    description: z.string().optional(),
-    videoUrl: z.string().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.type === "VIDEO") {
-      if (!data.videoUrl || !data.videoUrl.startsWith("http")) {
-        ctx.addIssue({
-          code: "custom",
-          message: "有効な動画URLを入力してください",
-          path: ["videoUrl"],
-        });
-      }
-    }
+export default function AddRoutineDialog() {
+  const [open, setOpen] = useState(false);
+  const { execute } = useAction(createRoutine, {
+    onSuccess: () => {
+      form.reset();
+      setOpen(false);
+    },
   });
 
-const formSchema = z.object({
-  title: z.string().min(1, "ルーティン名を入力してください"),
-  actions: z.array(actionSchema).min(1, "1つ以上のアクションが必要です"),
-});
-
-export default function AddRoutineDialog() {
-  const [open, setOpen] = React.useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    mode: "onChange", // リアルタイムにバリデーションを走らせてボタンを制御
+  const form = useForm<z.infer<typeof routineSchema>>({
+    resolver: zodResolver(routineSchema),
+    mode: "onChange",
     defaultValues: {
       title: "",
       actions: [{ title: "", icon: "🏋️", type: "TEXT", description: "" }],
@@ -76,7 +60,7 @@ export default function AddRoutineDialog() {
   });
 
   interface ActionDynamicFieldsProps {
-    control: Control<z.infer<typeof formSchema>>;
+    control: Control<z.infer<typeof routineSchema>>;
     index: number;
   }
 
@@ -130,12 +114,6 @@ export default function AddRoutineDialog() {
     );
   }
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log("Saving Routine and Actions:", data);
-    setOpen(false);
-    form.reset();
-  }
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -150,7 +128,7 @@ export default function AddRoutineDialog() {
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <form
           id="routine-complex-form"
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((data) => execute(data))}
           className="flex flex-col gap-6"
         >
           <DialogHeader>
@@ -192,7 +170,7 @@ export default function AddRoutineDialog() {
                 </span>
               </div>
 
-              <div className="flex max-h-100 flex-col gap-2 overflow-y-auto pr-1">
+              <div className="flex max-h-100 flex-col gap-2 overflow-y-auto">
                 {fields.map((field, index) => (
                   <div
                     key={field.id}
@@ -321,7 +299,7 @@ export default function AddRoutineDialog() {
                   })
                 }
               >
-                <Plus className="mr-2 size-5 transition-transform" />
+                <Plus className="size-5 transition-transform" />
                 アクションを追加する
               </Button>
             </div>
