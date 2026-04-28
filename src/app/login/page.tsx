@@ -37,7 +37,7 @@ export default function Home() {
     });
     setIsLoading(false);
     if (error) {
-      console.log(`Demo login error: ${error.message}`);
+      console.error(`Demo login error: ${error.message}`);
     } else {
       router.push("/");
     }

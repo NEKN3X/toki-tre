@@ -1,18 +1,18 @@
+import { Routine } from "@/lib/types";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useReducer } from "react";
-import { SessionItem } from "./session-card";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
-import { Field, FieldLabel } from "./ui/field";
-import { Progress } from "./ui/progress";
+} from "../ui/dialog";
+import { Field, FieldLabel } from "../ui/field";
+import { Progress } from "../ui/progress";
 
-const initialState = 0;
-const reducer = (
+const progressInitialState = 0;
+const progressReducer = (
   state: number,
   action: { type: "next" | "prev" | "reset" },
 ) => {
@@ -22,7 +22,7 @@ const reducer = (
     case "prev":
       return state - 1;
     case "reset":
-      return initialState;
+      return progressInitialState;
     default:
       return state;
   }
@@ -41,30 +41,33 @@ const YouTubePlayer = ({ youtubeUrl: youtubeUrl }: { youtubeUrl: string }) => {
 };
 
 export default function SessionDialog({
-  session,
+  routine,
   onComplete,
   onPrev,
   onNext,
 }: {
-  session: SessionItem;
+  routine: Routine;
   onComplete: (id: string) => void;
   onPrev?: () => void;
   onNext?: () => void;
 }) {
-  const [progress, dispatchProgress] = useReducer(reducer, initialState);
-  const progressPercentage = (progress / session.steps.length) * 100;
-  const currentStep = session.steps ? session.steps[progress] : null;
-  const isComplete = progress === session.steps.length;
+  const [progress, dispatchProgress] = useReducer(
+    progressReducer,
+    progressInitialState,
+  );
+  const progressPercentage = (progress / routine.steps.length) * 100;
+  const currentStep = routine.steps ? routine.steps[progress] : null;
+  const isComplete = progress === routine.steps.length;
 
   return (
     <>
       <DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2 select-none">
-            <span className="text-4xl">{session.icon}</span>
+            <span className="text-4xl">{routine.icon}</span>
             <div className="flex flex-col gap-0">
-              <DialogTitle>{session.title}</DialogTitle>
-              <DialogDescription>{session.description}</DialogDescription>
+              <DialogTitle>{routine.title}</DialogTitle>
+              <DialogDescription>{routine.description}</DialogDescription>
             </div>
           </div>
 
@@ -76,7 +79,7 @@ export default function SessionDialog({
               <span>
                 {isComplete
                   ? "Completed!"
-                  : `Step ${progress + 1} of ${session.steps.length}`}
+                  : `Step ${progress + 1} of ${routine.steps.length}`}
               </span>
               <span>{progressPercentage.toFixed(0)}%</span>
             </FieldLabel>
@@ -109,12 +112,12 @@ export default function SessionDialog({
                 </p>
               </div>
             )}
-            {currentStep && !isComplete && currentStep.youtubeUrl && (
+            {currentStep && !isComplete && currentStep.videoUrl && (
               <div className="flex flex-auto flex-col justify-center gap-4 select-none">
-                <YouTubePlayer youtubeUrl={currentStep.youtubeUrl} />
+                <YouTubePlayer youtubeUrl={currentStep.videoUrl} />
               </div>
             )}
-            {currentStep && !isComplete && !currentStep.youtubeUrl && (
+            {currentStep && !isComplete && !currentStep.videoUrl && (
               <div className="flex aspect-video flex-auto flex-col justify-center gap-6 select-none">
                 <div className="text-6xl">{currentStep.icon}</div>
                 <h3 className="text-3xl font-bold">{currentStep.title}</h3>
@@ -133,8 +136,8 @@ export default function SessionDialog({
             onClick={() => {
               onNext?.();
               dispatchProgress({ type: "next" });
-              if (progress === session.steps.length - 1) {
-                onComplete(session.id);
+              if (progress === routine.steps.length - 1) {
+                onComplete(routine.id);
               }
             }}
           >
