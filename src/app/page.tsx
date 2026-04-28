@@ -1,12 +1,12 @@
 "use client";
 
-import SessionCard, { SessionItem } from "@/components/session-card";
-import SessionDialog from "@/components/session-dialog";
+import RoutineCard, { Routine } from "@/components/routine/routine-card";
+import RoutineDialog from "@/components/routine/routine-dialog";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import confetti from "canvas-confetti";
 import { useState } from "react";
 
-const data: SessionItem[] = [
+const data: Routine[] = [
   {
     id: "waking-up",
     icon: "🌄",
@@ -50,7 +50,7 @@ const data: SessionItem[] = [
 
 export default function Home() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedSession, setSelectedSession] = useState<SessionItem>();
+  const [selectedSession, setSelectedSession] = useState<Routine>();
   const [closeTimer, setCloseTimer] = useState<NodeJS.Timeout>();
 
   return (
@@ -69,14 +69,14 @@ export default function Home() {
               className="rounded-xl"
               onClick={() => setSelectedSession(session)}
             >
-              <SessionCard session={session} />
+              <RoutineCard session={session} />
             </DialogTrigger>
           ))}
         </div>
       </div>
       <DialogContent className="sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
         {selectedSession && (
-          <SessionDialog
+          <RoutineDialog
             session={selectedSession}
             onComplete={() => {
               confetti({

@@ -1,21 +1,21 @@
-import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 
-export type SessionStep = {
+export type RoutineAction = {
   icon: string;
   title: string;
   description: string;
   youtubeUrl?: string;
 };
 
-export type SessionItem = {
+export type Routine = {
   id: string;
   icon: string;
   title: string;
   description: string;
-  steps: SessionStep[];
+  steps: RoutineAction[];
 };
 
-export default function SessionCard({ session }: { session: SessionItem }) {
+export default function SessionCard({ session }: { session: Routine }) {
   return (
     <Card className="h-36 cursor-pointer text-left select-none hover:shadow-md focus:ring">
       <CardHeader>

@@ -1,15 +1,15 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useReducer } from "react";
-import { SessionItem } from "./session-card";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
-import { Field, FieldLabel } from "./ui/field";
-import { Progress } from "./ui/progress";
+} from "../ui/dialog";
+import { Field, FieldLabel } from "../ui/field";
+import { Progress } from "../ui/progress";
+import { Routine } from "./routine-card";
 
 const initialState = 0;
 const reducer = (
@@ -46,7 +46,7 @@ export default function SessionDialog({
   onPrev,
   onNext,
 }: {
-  session: SessionItem;
+  session: Routine;
   onComplete: (id: string) => void;
   onPrev?: () => void;
   onNext?: () => void;
