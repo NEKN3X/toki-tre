@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/db";
 import { authClient } from "@/lib/safe-action";
 import { routineSchema } from "@/lib/schema";
+import { updateTag } from "next/cache";
 
 export const createRoutine = authClient
   .inputSchema(routineSchema)
@@ -23,5 +24,6 @@ export const createRoutine = authClient
         },
       },
     });
+    updateTag("routines");
     return { success: true };
   });
