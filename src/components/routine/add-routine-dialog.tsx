@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -29,6 +30,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { FileText, Plus, Trash2, Video } from "lucide-react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
+import type { Control } from "react-hook-form";
 import { Separator } from "../ui/separator";
 
 const actionSchema = z
@@ -43,7 +45,7 @@ const actionSchema = z
     if (data.type === "VIDEO") {
       if (!data.videoUrl || !data.videoUrl.startsWith("http")) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "有効な動画URLを入力してください",
           path: ["videoUrl"],
         });
@@ -56,7 +58,7 @@ const formSchema = z.object({
   actions: z.array(actionSchema).min(1, "1つ以上のアクションが必要です"),
 });
 
-export function AddRoutineDialog() {
+export default function AddRoutineDialog() {
   const [open, setOpen] = React.useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -72,6 +74,61 @@ export function AddRoutineDialog() {
     control: form.control,
     name: "actions",
   });
+
+  interface ActionDynamicFieldsProps {
+    control: Control<z.infer<typeof formSchema>>;
+    index: number;
+  }
+
+  function ActionDynamicFields({ control, index }: ActionDynamicFieldsProps) {
+    const currentType = useWatch({
+      control,
+      name: `actions.${index}.type`,
+    });
+
+    return (
+      <div>
+        {currentType === "TEXT" ? (
+          <Controller
+            name={`actions.${index}.description`}
+            control={control}
+            render={({ field: descField }) => (
+              <Field>
+                <FieldLabel className="flex gap-1 text-xs">
+                  <FileText className="size-3" /> 補足説明（任意）
+                </FieldLabel>
+                <Input {...descField} placeholder="意識するポイントなど" />
+              </Field>
+            )}
+          />
+        ) : (
+          <Controller
+            name={`actions.${index}.videoUrl`}
+            control={control}
+            render={({ field: videoField, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <div className="flex justify-between">
+                  <FieldLabel className="flex items-center justify-center gap-1 text-xs">
+                    <Video className="size-3" /> YouTube URL（必須）
+                  </FieldLabel>
+                  {fieldState.invalid && (
+                    <FieldError
+                      errors={[fieldState.error]}
+                      className="text-xs"
+                    />
+                  )}
+                </div>
+                <Input
+                  {...videoField}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+              </Field>
+            )}
+          />
+        )}
+      </div>
+    );
+  }
 
   function onSubmit(data: z.infer<typeof formSchema>) {
     console.log("Saving Routine and Actions:", data);
@@ -94,12 +151,15 @@ export function AddRoutineDialog() {
         <form
           id="routine-complex-form"
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-8"
+          className="flex flex-col gap-6"
         >
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">
               新しいルーティンを作成する
             </DialogTitle>
+            <DialogDescription>
+              繰り返したい行動を宣言しましょう
+            </DialogDescription>
           </DialogHeader>
 
           <div className="flex flex-col gap-6">
@@ -109,214 +169,169 @@ export function AddRoutineDialog() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>ルーティンの名前</FieldLabel>
+                  <div className="flex justify-between">
+                    <FieldLabel>ルーティンの名前</FieldLabel>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </div>
                   <Input
                     {...field}
                     placeholder="例: 朝起きたらすぐに、夜寝る前に"
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
                 </Field>
               )}
             />
 
             {/* Actions List */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold tracking-wider uppercase">
-                  ステップ
-                </h3>
+                <h3 className="text-sm font-bold">ステップ</h3>
                 <span className="text-muted-foreground text-xs">
                   {fields.length} ステップ
                 </span>
               </div>
 
-              <div>
-                {fields.map((field, index) => {
-                  const currentType = form.getValues(`actions.${index}.type`);
-
-                  return (
-                    <div
-                      key={field.id}
-                      className="bg-card focus-within:border-primary/50 border-input flex flex-col gap-4 rounded-lg border p-4 transition-colors"
-                    >
-                      <div className="flex flex-wrap items-start gap-4">
-                        {/* Emoji Picker Popover */}
-                        <div className="flex flex-col gap-2">
-                          <FieldLabel className="text-xs">アイコン</FieldLabel>
-                          <Controller
-                            name={`actions.${index}.icon`}
-                            control={form.control}
-                            render={({ field: iconField }) => (
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    className="h-8 w-10 p-0 text-xl"
-                                  >
-                                    {iconField.value}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent
-                                  className="w-full border-none p-0"
-                                  align="start"
+              <div className="flex max-h-100 flex-col gap-2 overflow-y-auto pr-1">
+                {fields.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="bg-card focus-within:border-primary/50 border-input flex flex-col gap-4 rounded-lg border p-4 transition-colors"
+                  >
+                    <div className="flex flex-wrap items-start gap-4">
+                      {/* Emoji Picker Popover */}
+                      <div className="flex flex-col gap-2">
+                        <FieldLabel className="text-xs">アイコン</FieldLabel>
+                        <Controller
+                          name={`actions.${index}.icon`}
+                          control={form.control}
+                          render={({ field: iconField }) => (
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className="h-8 w-10 p-0 text-xl"
                                 >
-                                  <EmojiPicker
-                                    onEmojiClick={(emojiData) =>
-                                      iconField.onChange(emojiData.emoji)
-                                    }
-                                    theme={Theme.AUTO}
-                                    emojiStyle={EmojiStyle.NATIVE}
-                                    height={350}
-                                  />
-                                </PopoverContent>
-                              </Popover>
-                            )}
-                          />
-                        </div>
+                                  {iconField.value}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-full border-none p-0"
+                                align="start"
+                              >
+                                <EmojiPicker
+                                  onEmojiClick={(emojiData) =>
+                                    iconField.onChange(emojiData.emoji)
+                                  }
+                                  theme={Theme.AUTO}
+                                  emojiStyle={EmojiStyle.NATIVE}
+                                  height={500}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          )}
+                        />
+                      </div>
 
-                        {/* Action Title */}
-                        <div className="min-w-50 flex-1">
-                          <Controller
-                            name={`actions.${index}.title`}
-                            control={form.control}
-                            render={({ field: titleField, fieldState }) => (
-                              <Field data-invalid={fieldState.invalid}>
+                      {/* Action Title */}
+                      <div className="min-w-50 flex-1">
+                        <Controller
+                          name={`actions.${index}.title`}
+                          control={form.control}
+                          render={({ field: titleField, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                              <div className="flex justify-between">
                                 <FieldLabel className="text-xs">
                                   アクションの名前
                                 </FieldLabel>
-                                <Input
-                                  {...titleField}
-                                  placeholder="例: スクワット20回"
-                                  className="h-8"
-                                />
                                 {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
+                                  <FieldError
+                                    errors={[fieldState.error]}
+                                    className="text-xs"
+                                  />
                                 )}
-                              </Field>
-                            )}
-                          />
-                        </div>
-
-                        {/* Type Select */}
-                        <div>
-                          <Controller
-                            name={`actions.${index}.type`}
-                            control={form.control}
-                            render={({ field: typeField }) => (
-                              <Field>
-                                <FieldLabel className="text-xs">
-                                  タイプ
-                                </FieldLabel>
-                                <Select
-                                  onValueChange={typeField.onChange}
-                                  defaultValue={typeField.value}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent className="p-1">
-                                    <SelectItem value="TEXT">
-                                      テキスト
-                                    </SelectItem>
-                                    <SelectItem value="VIDEO">
-                                      動画URL
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </Field>
-                            )}
-                          />
-                        </div>
-
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="text-muted-foreground hover:text-destructive mt-6 transition-colors"
-                          onClick={() => remove(index)}
-                          disabled={fields.length === 1}
-                        >
-                          <Trash2 className="size-5" />
-                        </Button>
+                              </div>
+                              <Input
+                                {...titleField}
+                                placeholder="例: スクワット20回"
+                              />
+                            </Field>
+                          )}
+                        />
                       </div>
 
-                      <Separator />
-
-                      {/* Dynamic Field (Description or VideoUrl) */}
+                      {/* Type Select */}
                       <div>
-                        {currentType === "TEXT" ? (
-                          <Controller
-                            name={`actions.${index}.description`}
-                            control={form.control}
-                            render={({ field: descField }) => (
-                              <Field>
-                                <FieldLabel className="flex items-center gap-1 text-[10px]">
-                                  <FileText className="size-3" />{" "}
-                                  補足説明（任意）
-                                </FieldLabel>
-                                <Input
-                                  {...descField}
-                                  placeholder="意識するポイントなど"
-                                  className="h-9 text-sm"
-                                />
-                              </Field>
-                            )}
-                          />
-                        ) : (
-                          <Controller
-                            name={`actions.${index}.videoUrl`}
-                            control={form.control}
-                            render={({ field: videoField, fieldState }) => (
-                              <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel className="flex items-center gap-1 text-[10px] text-blue-500">
-                                  <Video className="size-3" /> YouTube
-                                  URL（必須）
-                                </FieldLabel>
-                                <Input
-                                  {...videoField}
-                                  placeholder="https://www.youtube.com/watch?v=..."
-                                  className="h-9 border-blue-200 text-sm"
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            )}
-                          />
-                        )}
+                        <Controller
+                          name={`actions.${index}.type`}
+                          control={form.control}
+                          render={({ field: typeField }) => (
+                            <Field>
+                              <FieldLabel className="text-xs">
+                                タイプ
+                              </FieldLabel>
+                              <Select
+                                onValueChange={typeField.onChange}
+                                defaultValue={typeField.value}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="p-1">
+                                  <SelectItem value="TEXT">テキスト</SelectItem>
+                                  <SelectItem value="VIDEO">動画URL</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </Field>
+                          )}
+                        />
                       </div>
+
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground hover:text-destructive mt-6 transition-colors"
+                        onClick={() => remove(index)}
+                        disabled={fields.length === 1}
+                      >
+                        <Trash2 className="size-5" />
+                      </Button>
                     </div>
-                  );
-                })}
+
+                    <Separator />
+
+                    {/* Dynamic Field (Description or VideoUrl) */}
+                    <ActionDynamicFields control={form.control} index={index} />
+                  </div>
+                ))}
               </div>
 
               <Button
                 type="button"
                 variant="outline"
-                className="hover:bg-primary/5 hover:border-primary/50 group w-full rounded-2xl border-2 border-dashed py-8 transition-all"
+                className="hover:bg-primary/5 hover:border-primary/50 h-16 w-full rounded-lg border-2 border-dashed transition-all"
                 onClick={() =>
                   append({
                     title: "",
-                    icon: "✨",
+                    icon: "🏋️",
                     type: "TEXT",
                     description: "",
                     videoUrl: "",
                   })
                 }
               >
-                <Plus className="mr-2 size-5 transition-transform group-hover:scale-125" />
+                <Plus className="mr-2 size-5 transition-transform" />
                 アクションを追加する
               </Button>
             </div>
           </div>
 
-          <DialogFooter className="bg-background sticky bottom-0 border-t pt-4">
+          <DialogFooter>
             <Button
               type="submit"
               form="routine-complex-form"
-              className="h-12 w-full rounded-xl text-lg font-bold shadow-lg"
+              className="h-12 w-full rounded-lg text-lg font-bold"
               disabled={!form.formState.isValid}
             >
               ルーティンを保存する

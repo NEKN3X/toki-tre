@@ -1,6 +1,6 @@
 "use client";
 
-import { AddRoutineDialog } from "@/components/routine/add-routine-dialog";
+import AddRoutineDialog from "@/components/routine/add-routine-dialog";
 import RoutineCard, { Routine } from "@/components/routine/routine-card";
 import RoutineDialog from "@/components/routine/routine-dialog";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
