@@ -31,14 +31,15 @@ model Routine {
 }
 
 model Action {
-  id        String     @id @default(cuid())
-  routineId String
-  routine   Routine    @relation(fields: [routineId], references: [id], onDelete: Cascade)
-  order     Int
-  title     String
-  type      ActionType @default(TEXT)
-  icon      String? // TEXT
-  videoUrl  String? // VIDEO
+  id          String     @id @default(cuid())
+  routineId   String
+  routine     Routine    @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  order       Int
+  icon        String
+  title       String
+  type        ActionType @default(TEXT)
+  description String? // TEXT
+  videoUrl    String? // VIDEO
 }
 
 enum ActionType {
