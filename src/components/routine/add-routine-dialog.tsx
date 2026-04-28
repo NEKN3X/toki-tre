@@ -50,31 +50,31 @@ export default function AddRoutineDialog() {
     mode: "onChange",
     defaultValues: {
       title: "",
-      actions: [{ title: "", icon: "🏋️", type: "TEXT", description: "" }],
+      steps: [{ title: "", icon: "🏋️", type: "TEXT", description: "" }],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "actions",
+    name: "steps",
   });
 
-  interface ActionDynamicFieldsProps {
+  interface StepDynamicFieldsProps {
     control: Control<z.infer<typeof routineSchema>>;
     index: number;
   }
 
-  function ActionDynamicFields({ control, index }: ActionDynamicFieldsProps) {
+  function StepDynamicFields({ control, index }: StepDynamicFieldsProps) {
     const currentType = useWatch({
       control,
-      name: `actions.${index}.type`,
+      name: `steps.${index}.type`,
     });
 
     return (
       <div>
         {currentType === "TEXT" ? (
           <Controller
-            name={`actions.${index}.description`}
+            name={`steps.${index}.description`}
             control={control}
             render={({ field: descField }) => (
               <Field>
@@ -87,7 +87,7 @@ export default function AddRoutineDialog() {
           />
         ) : (
           <Controller
-            name={`actions.${index}.videoUrl`}
+            name={`steps.${index}.videoUrl`}
             control={control}
             render={({ field: videoField, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
@@ -161,7 +161,7 @@ export default function AddRoutineDialog() {
               )}
             />
 
-            {/* Actions List */}
+            {/* Steps List */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold">ステップ</h3>
@@ -176,12 +176,12 @@ export default function AddRoutineDialog() {
                     key={field.id}
                     className="bg-card focus-within:border-primary/50 border-input flex flex-col gap-4 rounded-lg border p-4 transition-colors"
                   >
-                    <div className="flex flex-wrap items-start gap-4">
+                    <div className="flex flex-wrap items-start gap-2 sm:gap-4">
                       {/* Emoji Picker Popover */}
                       <div className="flex flex-col gap-2">
                         <FieldLabel className="text-xs">アイコン</FieldLabel>
                         <Controller
-                          name={`actions.${index}.icon`}
+                          name={`steps.${index}.icon`}
                           control={form.control}
                           render={({ field: iconField }) => (
                             <Popover>
@@ -211,16 +211,16 @@ export default function AddRoutineDialog() {
                         />
                       </div>
 
-                      {/* Action Title */}
-                      <div className="min-w-50 flex-1">
+                      {/* Step Title */}
+                      <div className="flex-1">
                         <Controller
-                          name={`actions.${index}.title`}
+                          name={`steps.${index}.title`}
                           control={form.control}
                           render={({ field: titleField, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
                               <div className="flex justify-between">
                                 <FieldLabel className="text-xs">
-                                  アクションの名前
+                                  ステップの名前
                                 </FieldLabel>
                                 {fieldState.invalid && (
                                   <FieldError
@@ -241,7 +241,7 @@ export default function AddRoutineDialog() {
                       {/* Type Select */}
                       <div>
                         <Controller
-                          name={`actions.${index}.type`}
+                          name={`steps.${index}.type`}
                           control={form.control}
                           render={({ field: typeField }) => (
                             <Field>
@@ -280,7 +280,7 @@ export default function AddRoutineDialog() {
                     <Separator />
 
                     {/* Dynamic Field (Description or VideoUrl) */}
-                    <ActionDynamicFields control={form.control} index={index} />
+                    <StepDynamicFields control={form.control} index={index} />
                   </div>
                 ))}
               </div>
@@ -300,7 +300,7 @@ export default function AddRoutineDialog() {
                 }
               >
                 <Plus className="size-5 transition-transform" />
-                アクションを追加する
+                ステップを追加する
               </Button>
             </div>
           </div>

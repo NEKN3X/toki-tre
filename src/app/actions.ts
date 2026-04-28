@@ -12,13 +12,13 @@ export const createRoutine = authClient
       data: {
         title: parsedInput.title,
         userId: ctx.user.id,
-        actions: {
-          create: parsedInput.actions.map((action, index) => ({
-            title: action.title,
-            icon: action.icon,
-            type: action.type,
-            description: action.description,
-            videoUrl: action.videoUrl,
+        steps: {
+          create: parsedInput.steps.map((step, index) => ({
+            title: step.title,
+            icon: step.icon,
+            type: step.type,
+            description: step.description,
+            videoUrl: step.videoUrl,
             order: index,
           })),
         },

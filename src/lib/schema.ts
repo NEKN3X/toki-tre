@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const actionSchema = z
+export const stepSchema = z
   .object({
     title: z.string().min(1, "アクション名を入力してください"),
     icon: z.string().min(1, "アイコンを選択"),
@@ -22,5 +22,5 @@ export const actionSchema = z
 
 export const routineSchema = z.object({
   title: z.string().min(1, "ルーティン名を入力してください"),
-  actions: z.array(actionSchema).min(1, "1つ以上のアクションが必要です"),
+  steps: z.array(stepSchema).min(1, "1つ以上のアクションが必要です"),
 });

@@ -19,30 +19,30 @@ model User {
 }
 
 model Routine {
-  id          String   @id @default(cuid())
-  userId      String   @db.Uuid
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  icon        String   @default("🏋️")
+  id          String        @id @default(cuid())
+  userId      String        @db.Uuid
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  icon        String        @default("🏋️")
   title       String
   description String?
-  actions     Action[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  steps       RoutineStep[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
-model Action {
-  id          String     @id @default(cuid())
+model RoutineStep {
+  id          String          @id @default(cuid())
   routineId   String
-  routine     Routine    @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  routine     Routine         @relation(fields: [routineId], references: [id], onDelete: Cascade)
   order       Int
   icon        String
   title       String
-  type        ActionType @default(TEXT)
+  type        RoutineStepType @default(TEXT)
   description String? // TEXT
   videoUrl    String? // VIDEO
 }
 
-enum ActionType {
+enum RoutineStepType {
   TEXT
   VIDEO
 }

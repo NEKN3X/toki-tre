@@ -13,7 +13,7 @@ export default async function Home() {
       userId: user?.id,
     },
     include: {
-      actions: true,
+      steps: true,
     },
   });
 

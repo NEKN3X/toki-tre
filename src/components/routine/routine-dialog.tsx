@@ -55,9 +55,9 @@ export default function SessionDialog({
     progressReducer,
     progressInitialState,
   );
-  const progressPercentage = (progress / routine.actions.length) * 100;
-  const currentAction = routine.actions ? routine.actions[progress] : null;
-  const isComplete = progress === routine.actions.length;
+  const progressPercentage = (progress / routine.steps.length) * 100;
+  const currentStep = routine.steps ? routine.steps[progress] : null;
+  const isComplete = progress === routine.steps.length;
 
   return (
     <>
@@ -79,7 +79,7 @@ export default function SessionDialog({
               <span>
                 {isComplete
                   ? "Completed!"
-                  : `Step ${progress + 1} of ${routine.actions.length}`}
+                  : `Step ${progress + 1} of ${routine.steps.length}`}
               </span>
               <span>{progressPercentage.toFixed(0)}%</span>
             </FieldLabel>
@@ -112,17 +112,17 @@ export default function SessionDialog({
                 </p>
               </div>
             )}
-            {currentAction && !isComplete && currentAction.videoUrl && (
+            {currentStep && !isComplete && currentStep.videoUrl && (
               <div className="flex flex-auto flex-col justify-center gap-4 select-none">
-                <YouTubePlayer youtubeUrl={currentAction.videoUrl} />
+                <YouTubePlayer youtubeUrl={currentStep.videoUrl} />
               </div>
             )}
-            {currentAction && !isComplete && !currentAction.videoUrl && (
+            {currentStep && !isComplete && !currentStep.videoUrl && (
               <div className="flex aspect-video flex-auto flex-col justify-center gap-6 select-none">
-                <div className="text-6xl">{currentAction.icon}</div>
-                <h3 className="text-3xl font-bold">{currentAction.title}</h3>
+                <div className="text-6xl">{currentStep.icon}</div>
+                <h3 className="text-3xl font-bold">{currentStep.title}</h3>
                 <p className="text-muted-foreground text-lg">
-                  {currentAction.description}
+                  {currentStep.description}
                 </p>
               </div>
             )}
@@ -136,7 +136,7 @@ export default function SessionDialog({
             onClick={() => {
               onNext?.();
               dispatchProgress({ type: "next" });
-              if (progress === routine.actions.length - 1) {
+              if (progress === routine.steps.length - 1) {
                 onComplete(routine.id);
               }
             }}

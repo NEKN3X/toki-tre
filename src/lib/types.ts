@@ -1,7 +1,7 @@
-import { ActionModel, RoutineModel } from "@/generated/prisma/models";
+import { RoutineModel, RoutineStepModel } from "@/generated/prisma/models";
 
-export type Action = ActionModel;
+export type RoutineStep = RoutineStepModel;
 
 export type Routine = RoutineModel & {
-  actions: Action[];
+  steps: RoutineStep[];
 };
