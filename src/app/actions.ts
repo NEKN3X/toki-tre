@@ -74,7 +74,4 @@ export const updateRoutine = authClient
 export const logout = actionClient.action(async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
-
-  const url = new URL("/login", process.env.NEXT_PUBLIC_SITE_URL);
-  return { redirect: url.href };
 });
