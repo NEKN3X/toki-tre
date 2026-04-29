@@ -50,6 +50,7 @@ export default function EditRoutineDialog() {
     mode: "onChange",
     defaultValues: {
       title: "",
+      icon: "🌄",
       steps: [{ title: "", icon: "🏋️", type: "TEXT", description: "" }],
     },
   });
@@ -141,25 +142,63 @@ export default function EditRoutineDialog() {
           </DialogHeader>
 
           <div className="flex flex-col gap-6">
-            {/* Routine Title */}
-            <Controller
-              name="title"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <div className="flex justify-between">
-                    <FieldLabel>ルーティンの名前</FieldLabel>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </div>
-                  <Input
-                    {...field}
-                    placeholder="例: 朝起きたらすぐに、夜寝る前に"
-                  />
-                </Field>
-              )}
-            />
+            {/* Routine */}
+            <div className="flex items-end gap-3">
+              <Controller
+                name="icon"
+                control={form.control}
+                render={({ field: routineIconField }) => (
+                  <Field className="w-14">
+                    <FieldLabel>アイコン</FieldLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="h-10 w-full p-0 text-2xl"
+                        >
+                          {routineIconField.value}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-full border-none p-0"
+                        align="start"
+                      >
+                        <EmojiPicker
+                          onEmojiClick={(emojiData) =>
+                            routineIconField.onChange(emojiData.emoji)
+                          }
+                          theme={Theme.AUTO}
+                          emojiStyle={EmojiStyle.NATIVE}
+                          height={400}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </Field>
+                )}
+              />
+
+              <div className="flex-1">
+                <Controller
+                  name="title"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <div className="flex justify-between">
+                        <FieldLabel>ルーティンの名前</FieldLabel>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </div>
+                      <Input
+                        {...field}
+                        className="h-10"
+                        placeholder="例: 朝の筋トレルーティン"
+                      />
+                    </Field>
+                  )}
+                />
+              </div>
+            </div>
 
             {/* Steps List */}
             <div className="flex flex-col gap-2">

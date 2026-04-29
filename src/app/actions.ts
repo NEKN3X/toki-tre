@@ -12,6 +12,7 @@ export const createRoutine = authClient
     await prisma.routine.create({
       data: {
         title: parsedInput.title,
+        icon: parsedInput.icon,
         userId: ctx.user.id,
         steps: {
           create: parsedInput.steps.map((step, index) => ({
