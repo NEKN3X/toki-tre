@@ -24,8 +24,10 @@ export default function Home() {
 
     await supabase.auth.signInWithOAuth({
       provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
-    setIsLoading(false);
   };
 
   const handleGithubLogin = async () => {
@@ -34,8 +36,10 @@ export default function Home() {
 
     await supabase.auth.signInWithOAuth({
       provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
-    setIsLoading(false);
   };
 
   const handleDemoLogin = async () => {
