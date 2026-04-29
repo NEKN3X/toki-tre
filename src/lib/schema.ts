@@ -8,12 +8,15 @@ export const stepSchema = z
       .max(30, "最大30文字です"),
     icon: z.string().min(1, "アイコンを選択"),
     type: z.enum(["TEXT", "VIDEO"]),
-    description: z.string().max(50, "最大50文字です"),
-    videoUrl: z.string().max(100),
+    description: z.string().max(50, "最大50文字です").optional(),
+    videoUrl: z.string().max(100).optional(),
   })
   .superRefine((data, ctx) => {
     if (data.type === "VIDEO") {
-      if (!data.videoUrl.startsWith("https://www.youtube.com")) {
+      if (
+        !data.videoUrl ||
+        !data.videoUrl.startsWith("https://www.youtube.com")
+      ) {
         ctx.addIssue({
           code: "custom",
           message: "有効な動画URLを入力してください",
