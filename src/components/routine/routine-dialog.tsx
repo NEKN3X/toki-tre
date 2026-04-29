@@ -88,7 +88,7 @@ export default function SessionDialog({
         </div>
       </DialogHeader>
       <DialogFooter className="p-0">
-        <div className="flex h-full w-full items-center gap-2 px-2 py-10">
+        <div className="flex h-full w-full items-center gap-2 px-2 pb-10">
           <Button
             className="cursor-pointer"
             variant={"outline"}
@@ -104,7 +104,7 @@ export default function SessionDialog({
 
           <div className="w-full text-center">
             {isComplete && (
-              <div className="flex aspect-video flex-auto flex-col justify-center gap-4 select-none">
+              <div className="mt-10 flex aspect-video flex-auto flex-col justify-center gap-4 select-none">
                 <div className="text-6xl">🎉</div>
                 <h3 className="text-3xl font-bold">Great job!</h3>
                 <p className="text-muted-foreground text-lg">
@@ -113,12 +113,16 @@ export default function SessionDialog({
               </div>
             )}
             {currentStep && !isComplete && currentStep.videoUrl && (
-              <div className="flex flex-auto flex-col justify-center gap-4 select-none">
+              <div className="flex flex-auto flex-col justify-center select-none">
+                <div className="flex h-10 items-center justify-center gap-2 overflow-hidden">
+                  <span>{currentStep.icon}</span>
+                  <div>{currentStep.title}</div>
+                </div>
                 <YouTubePlayer youtubeUrl={currentStep.videoUrl} />
               </div>
             )}
             {currentStep && !isComplete && !currentStep.videoUrl && (
-              <div className="flex aspect-video flex-auto flex-col justify-center gap-6 select-none">
+              <div className="mt-10 flex aspect-video flex-auto flex-col justify-center gap-6 select-none">
                 <div className="text-6xl">{currentStep.icon}</div>
                 <h3 className="text-3xl font-bold">{currentStep.title}</h3>
                 <p className="text-muted-foreground text-lg">

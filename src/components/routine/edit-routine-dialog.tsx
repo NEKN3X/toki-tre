@@ -36,7 +36,7 @@ import type { Control } from "react-hook-form";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Separator } from "../ui/separator";
 
-export default function AddRoutineDialog() {
+export default function EditRoutineDialog() {
   const [open, setOpen] = useState(false);
   const { execute } = useAction(createRoutine, {
     onSuccess: () => {

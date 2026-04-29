@@ -1,6 +1,6 @@
 "use client";
 
-import AddRoutineDialog from "@/components/routine/add-routine-dialog";
+import EditRoutineDialog from "@/components/routine/edit-routine-dialog";
 import RoutineCard from "@/components/routine/routine-card";
 import RoutineDialog from "@/components/routine/routine-dialog";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -62,7 +62,7 @@ export default function HomePresentation({
           )}
         </DialogContent>
       </Dialog>
-      <AddRoutineDialog />
+      <EditRoutineDialog />
     </>
   );
 }
