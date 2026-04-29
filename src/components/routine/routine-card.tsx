@@ -75,7 +75,9 @@ export default function SessionCard({
           </div>
         </CardHeader>
         <CardContent className="pl-1.5">
-          <CardDescription>{routine.description}</CardDescription>
+          <CardDescription className="overflow-hidden text-nowrap text-ellipsis">
+            {routine.description}
+          </CardDescription>
         </CardContent>
       </Card>
     </DialogTrigger>

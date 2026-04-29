@@ -48,11 +48,14 @@ function StepDynamicFields({ control, index }: StepDynamicFieldsProps) {
       <Controller
         name={`steps.${index}.description`}
         control={control}
-        render={({ field: descField }) => (
+        render={({ field: descField, fieldState }) => (
           <Field hidden={currentType !== "TEXT"}>
-            <FieldLabel className="flex gap-1 text-xs">
-              <FileText className="size-3" /> このステップの説明（任意）
-            </FieldLabel>
+            <div className="flex justify-between">
+              <FieldLabel className="flex gap-1 text-xs">
+                <FileText className="size-3" /> このステップの説明（任意）
+              </FieldLabel>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </div>
             <Input {...descField} placeholder="意識するポイントなど" />
           </Field>
         )}
@@ -101,7 +104,7 @@ export function RoutineForm({
     resolver: zodResolver(routineSchema),
     defaultValues: {
       title: "",
-      icon: "🌄",
+      icon: "🌅",
       description: "",
       steps: [
         { title: "", icon: "🏋️", type: "TEXT", description: "", videoUrl: "" },
@@ -182,7 +185,7 @@ export function RoutineForm({
                     <Input
                       {...field}
                       className="h-10"
-                      placeholder="例: 朝の筋トレルーティン"
+                      placeholder="例: 朝起きたらすぐに、夜寝る前に"
                     />
                   </Field>
                 )}
@@ -193,9 +196,14 @@ export function RoutineForm({
           <Controller
             name="description"
             control={form.control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>このルーティンの説明（任意）</FieldLabel>
+                <div className="flex justify-between">
+                  <FieldLabel>このルーティンの説明（任意）</FieldLabel>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </div>
 
                 <Input
                   {...field}
@@ -359,7 +367,7 @@ export function RoutineForm({
         <Button
           type="submit"
           className="w-full font-bold"
-          disabled={!form.formState.isValid || isExecuting}
+          disabled={isExecuting}
         >
           {isExecuting ? <Spinner data-icon="inline-start" /> : submitLabel}
         </Button>
