@@ -15,6 +15,9 @@ export default async function Home() {
     include: {
       steps: true,
     },
+    orderBy: {
+      createdAt: "asc",
+    },
   });
 
   return <HomePresentation routines={routines} />;

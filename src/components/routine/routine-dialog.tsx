@@ -1,11 +1,5 @@
 import { Routine } from "@/lib/types";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  Pencil,
-  Trash2,
-  X,
-} from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useReducer } from "react";
 import { Button } from "../ui/button";
 import {
@@ -71,7 +65,7 @@ export default function SessionDialog({
         <div className="flex flex-col gap-4">
           <div className="flex gap-2 select-none">
             <span className="text-4xl">{routine.icon}</span>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col justify-center gap-1">
               <DialogTitle>{routine.title}</DialogTitle>
               <DialogDescription>{routine.description}</DialogDescription>
             </div>

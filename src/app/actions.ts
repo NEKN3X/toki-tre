@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { actionClient, authClient } from "@/lib/safe-action";
-import { routineSchema } from "@/lib/schema";
+import { routineSchema, routineWithIdSchema } from "@/lib/schema";
 import { createClient } from "@/lib/supabase/server";
 import { updateTag } from "next/cache";
 import z from "zod";
@@ -18,11 +18,7 @@ export const createRoutine = authClient
         userId: ctx.user.id,
         steps: {
           create: parsedInput.steps.map((step, index) => ({
-            title: step.title,
-            icon: step.icon,
-            type: step.type,
-            description: step.description,
-            videoUrl: step.videoUrl,
+            ...step,
             order: index,
           })),
         },
@@ -40,6 +36,35 @@ export const deleteRoutine = authClient
       where: {
         id: parsedInput.id,
         userId: ctx.user.id,
+      },
+    });
+    updateTag("routines");
+    return { success: true };
+  });
+
+export const updateRoutine = authClient
+  .inputSchema(routineWithIdSchema)
+  .action(async ({ parsedInput, ctx }) => {
+    await prisma.routine.update({
+      where: {
+        id: parsedInput.id,
+        userId: ctx.user.id,
+      },
+      data: {
+        title: parsedInput.title,
+        icon: parsedInput.icon,
+        description: parsedInput.description,
+        steps: {
+          deleteMany: {
+            routineId: parsedInput.id,
+          },
+          create: parsedInput.steps.map((step, index) => ({
+            ...step,
+            description: step.type === "TEXT" ? step.description : undefined,
+            videoUrl: step.type === "VIDEO" ? step.videoUrl : undefined,
+            order: index,
+          })),
+        },
       },
     });
     updateTag("routines");
