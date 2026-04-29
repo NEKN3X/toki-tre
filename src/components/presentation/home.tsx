@@ -1,11 +1,13 @@
 "use client";
 
+import { deleteRoutine } from "@/app/actions";
 import EditRoutineDialog from "@/components/routine/edit-routine-dialog";
 import RoutineCard from "@/components/routine/routine-card";
 import RoutineDialog from "@/components/routine/routine-dialog";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Routine } from "@/lib/types";
 import confetti from "canvas-confetti";
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 
 export default function HomePresentation({
@@ -16,6 +18,7 @@ export default function HomePresentation({
   const [selectedRoutine, setSelectedRoutine] = useState<Routine>();
   const [closeTimer, setCloseTimer] = useState<NodeJS.Timeout>();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { execute: deleteAction } = useAction(deleteRoutine);
 
   return (
     <>
@@ -34,7 +37,15 @@ export default function HomePresentation({
                 className="rounded-xl"
                 onClick={() => setSelectedRoutine(routine)}
               >
-                <RoutineCard routine={routine} />
+                <RoutineCard
+                  routine={routine}
+                  onEdit={() => {}}
+                  onDelete={() => {
+                    if (confirm("このルーティンを削除しますか？")) {
+                      deleteAction({ id: routine.id });
+                    }
+                  }}
+                />
               </DialogTrigger>
             ))}
           </div>
@@ -57,10 +68,6 @@ export default function HomePresentation({
               }}
               onPrev={() => {
                 clearTimeout(closeTimer);
-              }}
-              onClose={() => {
-                clearTimeout(closeTimer);
-                setDialogOpen(false);
               }}
             />
           )}

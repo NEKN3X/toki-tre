@@ -5,6 +5,7 @@ import { actionClient, authClient } from "@/lib/safe-action";
 import { routineSchema } from "@/lib/schema";
 import { createClient } from "@/lib/supabase/server";
 import { updateTag } from "next/cache";
+import z from "zod";
 
 export const createRoutine = authClient
   .inputSchema(routineSchema)
@@ -25,6 +26,20 @@ export const createRoutine = authClient
             order: index,
           })),
         },
+      },
+    });
+    updateTag("routines");
+    return { success: true };
+  });
+
+const routineIdSchema = z.object({ id: z.string() });
+export const deleteRoutine = authClient
+  .inputSchema(routineIdSchema)
+  .action(async ({ parsedInput, ctx }) => {
+    await prisma.routine.delete({
+      where: {
+        id: parsedInput.id,
+        userId: ctx.user.id,
       },
     });
     updateTag("routines");

@@ -49,19 +49,13 @@ const YouTubePlayer = ({ youtubeUrl: youtubeUrl }: { youtubeUrl: string }) => {
 export default function SessionDialog({
   routine,
   onComplete,
-  onClose,
   onPrev,
   onNext,
-  onEdit,
-  onDelete,
 }: {
   routine: Routine;
   onComplete: (id: string) => void;
-  onClose: () => void;
   onPrev?: () => void;
   onNext?: () => void;
-  onEdit?: () => void;
-  onDelete?: () => void;
 }) {
   const [progress, dispatchProgress] = useReducer(
     progressReducer,
