@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
-    "db:local": "supabase start"
+    "db:start": "supabase start",
+    "db:stop": "supabase stop"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

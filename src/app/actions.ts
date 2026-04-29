@@ -1,8 +1,9 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { authClient } from "@/lib/safe-action";
+import { actionClient, authClient } from "@/lib/safe-action";
 import { routineSchema } from "@/lib/schema";
+import { createClient } from "@/lib/supabase/server";
 import { updateTag } from "next/cache";
 
 export const createRoutine = authClient
@@ -27,3 +28,11 @@ export const createRoutine = authClient
     updateTag("routines");
     return { success: true };
   });
+
+export const logout = actionClient.action(async () => {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+
+  const url = new URL("/login", process.env.NEXT_PUBLIC_SITE_URL);
+  return { redirect: url.href };
+});

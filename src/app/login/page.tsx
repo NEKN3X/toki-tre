@@ -4,32 +4,46 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { createClient } from "@/lib/supabase/client";
+import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-const supabase = createClient();
+import { logout } from "../actions";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { execute: handleLogout } = useAction(logout, {
+    onSuccess: () => {
+      router.push("/login");
+    },
+  });
 
   const handleGoogleLogin = async () => {
+    const supabase = createClient();
     setIsLoading(true);
 
-    supabase.auth.signInWithOAuth({
+    await supabase.auth.signInWithOAuth({
       provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
   };
 
   const handleGithubLogin = async () => {
+    const supabase = createClient();
     setIsLoading(true);
 
-    supabase.auth.signInWithOAuth({
+    await supabase.auth.signInWithOAuth({
       provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
   };
 
   const handleDemoLogin = async () => {
+    const supabase = createClient();
     setIsLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email: "demo@example.com",
@@ -72,6 +86,13 @@ export default function Home() {
               GitHub でログイン
             </Button>
             <Separator />
+            <Button
+              variant={"outline"}
+              className="cursor-pointer"
+              onClick={() => handleLogout()}
+            >
+              ログアウト
+            </Button>
             <Button className="cursor-pointer" onClick={handleDemoLogin}>
               デモアカウントでログイン
             </Button>
