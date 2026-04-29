@@ -1,5 +1,11 @@
 import { Routine } from "@/lib/types";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Pencil,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useReducer } from "react";
 import { Button } from "../ui/button";
 import {
@@ -43,13 +49,19 @@ const YouTubePlayer = ({ youtubeUrl: youtubeUrl }: { youtubeUrl: string }) => {
 export default function SessionDialog({
   routine,
   onComplete,
+  onClose,
   onPrev,
   onNext,
+  onEdit,
+  onDelete,
 }: {
   routine: Routine;
   onComplete: (id: string) => void;
+  onClose: () => void;
   onPrev?: () => void;
   onNext?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }) {
   const [progress, dispatchProgress] = useReducer(
     progressReducer,
@@ -63,9 +75,9 @@ export default function SessionDialog({
     <>
       <DialogHeader>
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2 select-none">
+          <div className="flex gap-2 select-none">
             <span className="text-4xl">{routine.icon}</span>
-            <div className="flex flex-col gap-0">
+            <div className="flex flex-col justify-center">
               <DialogTitle>{routine.title}</DialogTitle>
               <DialogDescription>{routine.description}</DialogDescription>
             </div>

@@ -29,7 +29,7 @@ import {
 import { routineSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
-import { FileText, Plus, Trash2, Video } from "lucide-react";
+import { FileText, Plus, Trash2, Video, X } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import type { Control } from "react-hook-form";
@@ -51,6 +51,7 @@ export default function EditRoutineDialog() {
     defaultValues: {
       title: "",
       icon: "🌄",
+      description: "",
       steps: [{ title: "", icon: "🏋️", type: "TEXT", description: "" }],
     },
   });
@@ -80,7 +81,7 @@ export default function EditRoutineDialog() {
             render={({ field: descField }) => (
               <Field>
                 <FieldLabel className="flex gap-1 text-xs">
-                  <FileText className="size-3" /> 補足説明（任意）
+                  <FileText className="size-3" /> このステップの説明（任意）
                 </FieldLabel>
                 <Input {...descField} placeholder="意識するポイントなど" />
               </Field>
@@ -132,72 +133,90 @@ export default function EditRoutineDialog() {
           onSubmit={form.handleSubmit((data) => execute(data))}
           className="flex flex-col gap-6"
         >
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">
-              新しいルーティンを作成する
-            </DialogTitle>
-            <DialogDescription>
-              繰り返したい行動を宣言しましょう
-            </DialogDescription>
+          <DialogHeader className="flex w-full flex-row justify-between">
+            <div className="flex flex-col gap-1">
+              <DialogTitle className="text-2xl font-bold">
+                新しいルーティンを作成する
+              </DialogTitle>
+              <DialogDescription>
+                繰り返したい行動を宣言しましょう
+              </DialogDescription>
+            </div>
           </DialogHeader>
 
           <div className="flex flex-col gap-6">
             {/* Routine */}
-            <div className="flex items-end gap-3">
-              <Controller
-                name="icon"
-                control={form.control}
-                render={({ field: routineIconField }) => (
-                  <Field className="w-14">
-                    <FieldLabel>アイコン</FieldLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="h-10 w-full p-0 text-2xl"
-                        >
-                          {routineIconField.value}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-full border-none p-0"
-                        align="start"
-                      >
-                        <EmojiPicker
-                          onEmojiClick={(emojiData) =>
-                            routineIconField.onChange(emojiData.emoji)
-                          }
-                          theme={Theme.AUTO}
-                          emojiStyle={EmojiStyle.NATIVE}
-                          height={400}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </Field>
-                )}
-              />
-
-              <div className="flex-1">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-end gap-4">
                 <Controller
-                  name="title"
+                  name="icon"
                   control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <div className="flex justify-between">
-                        <FieldLabel>ルーティンの名前</FieldLabel>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </div>
-                      <Input
-                        {...field}
-                        className="h-10"
-                        placeholder="例: 朝の筋トレルーティン"
-                      />
+                  render={({ field: routineIconField }) => (
+                    <Field className="w-14">
+                      <FieldLabel>アイコン</FieldLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="h-10 w-full p-0 text-2xl"
+                          >
+                            {routineIconField.value}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-full border-none p-0"
+                          align="start"
+                        >
+                          <EmojiPicker
+                            onEmojiClick={(emojiData) =>
+                              routineIconField.onChange(emojiData.emoji)
+                            }
+                            theme={Theme.AUTO}
+                            emojiStyle={EmojiStyle.NATIVE}
+                            height={400}
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </Field>
                   )}
                 />
+
+                <div className="flex-1">
+                  <Controller
+                    name="title"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <div className="flex justify-between">
+                          <FieldLabel>ルーティンの名前</FieldLabel>
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </div>
+                        <Input
+                          {...field}
+                          className="h-10"
+                          placeholder="例: 朝の筋トレルーティン"
+                        />
+                      </Field>
+                    )}
+                  />
+                </div>
               </div>
+
+              <Controller
+                name="description"
+                control={form.control}
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel>このルーティンの説明（任意）</FieldLabel>
+                    <Input
+                      {...field}
+                      placeholder="例: 最高の1日を始めるための5分間"
+                    />
+                  </Field>
+                )}
+              />
             </div>
 
             {/* Steps List */}

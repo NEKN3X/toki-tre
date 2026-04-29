@@ -58,6 +58,10 @@ export default function HomePresentation({
               onPrev={() => {
                 clearTimeout(closeTimer);
               }}
+              onClose={() => {
+                clearTimeout(closeTimer);
+                setDialogOpen(false);
+              }}
             />
           )}
         </DialogContent>

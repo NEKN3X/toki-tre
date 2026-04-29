@@ -23,5 +23,6 @@ export const stepSchema = z
 export const routineSchema = z.object({
   title: z.string().min(1, "ルーティン名を入力してください"),
   icon: z.string().min(1, "アイコンを選択"),
+  description: z.string().optional(),
   steps: z.array(stepSchema).min(1, "1つ以上のアクションが必要です"),
 });
