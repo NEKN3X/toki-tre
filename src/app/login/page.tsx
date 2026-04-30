@@ -1,61 +1,22 @@
 "use client";
+
 import { Icons } from "@/components/auth/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { createClient } from "@/lib/supabase/client";
 import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { logout } from "../actions";
+import { demoLogin, googleLogin, logout } from "./actions";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-  const { execute: handleLogout } = useAction(logout, {
-    onSuccess: () => {
-      router.push("/login");
-    },
-  });
+  const { execute: handleLogout, isExecuting: isExecutingLogout } =
+    useAction(logout);
+  const { execute: handleGoogleLogin, isExecuting: isExecutingGoogleLogin } =
+    useAction(googleLogin);
+  const { execute: handleDemoLogin, isExecuting: isExecutingDemoLogin } =
+    useAction(demoLogin);
 
-  const handleGoogleLogin = async () => {
-    const supabase = createClient();
-    setIsLoading(true);
-
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-  };
-
-  const handleGithubLogin = async () => {
-    const supabase = createClient();
-    setIsLoading(true);
-
-    await supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-  };
-
-  const handleDemoLogin = async () => {
-    const supabase = createClient();
-    setIsLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: "demo@example.com",
-      password: "demo",
-    });
-    setIsLoading(false);
-    if (error) {
-      console.error(`Demo login error: ${error.message}`);
-    } else {
-      router.push("/");
-    }
-  };
+  const isExecuting =
+    isExecutingLogout || isExecutingGoogleLogin || isExecutingDemoLogin;
 
   return (
     <div className="flex justify-center pt-8">
@@ -70,30 +31,26 @@ export default function Home() {
             <Button
               className="cursor-pointer"
               variant="outline"
-              onClick={handleGoogleLogin}
-              disabled={isLoading}
+              onClick={() => handleGoogleLogin()}
+              disabled={isExecuting}
             >
               <Icons provider="google" />
               Google でログイン
-            </Button>
-            <Button
-              className="cursor-pointer"
-              variant="outline"
-              onClick={handleGithubLogin}
-              disabled={isLoading}
-            >
-              <Icons provider="github" />
-              GitHub でログイン
             </Button>
             <Separator />
             <Button
               variant={"outline"}
               className="cursor-pointer"
               onClick={() => handleLogout()}
+              disabled={isExecuting}
             >
               ログアウト
             </Button>
-            <Button className="cursor-pointer" onClick={handleDemoLogin}>
+            <Button
+              className="cursor-pointer"
+              onClick={() => handleDemoLogin()}
+              disabled={isExecuting}
+            >
               デモアカウントでログイン
             </Button>
           </div>
