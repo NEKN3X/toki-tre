@@ -66,8 +66,12 @@ export default function SessionDialog({
           <div className="flex gap-2 select-none">
             <span className="text-4xl">{routine.icon}</span>
             <div className="flex flex-col justify-center gap-1">
-              <DialogTitle>{routine.title}</DialogTitle>
-              <DialogDescription>{routine.description}</DialogDescription>
+              <DialogTitle className="line-clamp-1 overflow-hidden text-ellipsis">
+                {routine.title}
+              </DialogTitle>
+              <DialogDescription className="line-clamp-1 overflow-hidden text-ellipsis">
+                {routine.description}
+              </DialogDescription>
             </div>
           </div>
 

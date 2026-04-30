@@ -34,11 +34,13 @@ export default function SessionCard({
 
   return (
     <DialogTrigger className="rounded-xl" onClick={onClick} disabled={disabled}>
-      <Card className="flex-cool flex h-26 cursor-pointer justify-between p-4 text-left select-none hover:shadow-md focus:ring">
+      <Card className="flex-cool flex h-28 cursor-pointer justify-between p-4 text-left select-none hover:shadow-md focus:ring">
         <CardHeader className="flex justify-between p-0">
           <div className="flex items-center justify-center gap-2">
             <span className="text-4xl">{routine.icon}</span>
-            <CardTitle className="text-lg">{routine.title}</CardTitle>
+            <CardTitle className="line-clamp-2 w-full overflow-hidden text-wrap text-ellipsis">
+              {routine.title}
+            </CardTitle>
           </div>
           <div onClick={(e) => e.stopPropagation()}>
             <DropdownMenu>
@@ -75,7 +77,9 @@ export default function SessionCard({
           </div>
         </CardHeader>
         <CardContent className="pl-1.5">
-          <CardDescription>{routine.description}</CardDescription>
+          <CardDescription className="overflow-hidden text-nowrap text-ellipsis">
+            {routine.description}
+          </CardDescription>
         </CardContent>
       </Card>
     </DialogTrigger>

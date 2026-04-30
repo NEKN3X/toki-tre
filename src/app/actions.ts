@@ -1,9 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { actionClient, authClient } from "@/lib/safe-action";
+import { authClient } from "@/lib/safe-action";
 import { routineSchema, routineWithIdSchema } from "@/lib/schema";
-import { createClient } from "@/lib/supabase/server";
 import { updateTag } from "next/cache";
 import z from "zod";
 
@@ -70,8 +69,3 @@ export const updateRoutine = authClient
     updateTag("routines");
     return { success: true };
   });
-
-export const logout = actionClient.action(async () => {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
-});
