@@ -17,19 +17,19 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-interface SessionCardProps {
+interface Props {
   routine: Routine;
   onEdit: (routine: Routine) => void;
   onDelete: (id: string) => void;
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
-export default function SessionCard({
+export default function RoutineCard({
   routine,
   onEdit,
   onDelete,
   onClick,
-}: SessionCardProps) {
+}: Props) {
   const [disabled, setDisabled] = useState(false);
 
   return (
@@ -42,39 +42,37 @@ export default function SessionCard({
               {routine.title}
             </CardTitle>
           </div>
-          <div onClick={(e) => e.stopPropagation()}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  asChild
-                  className="text-muted-foreground hover:text-foreground -mr-2 h-8 w-8"
-                >
-                  <EllipsisVerticalIcon className="size-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-32">
-                <DropdownMenuItem
-                  onClick={() => onEdit(routine)}
-                  className="cursor-pointer"
-                >
-                  <Pencil className="mr-2 size-4" />
-                  <span>編集</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setDisabled(true);
-                    onDelete(routine.id);
-                  }}
-                  className="text-destructive focus:text-destructive cursor-pointer"
-                >
-                  <Trash2 className="mr-2 size-4" />
-                  <span>削除</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                asChild
+                className="text-muted-foreground hover:text-foreground -mr-2 h-8 w-8"
+              >
+                <EllipsisVerticalIcon className="size-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-32">
+              <DropdownMenuItem
+                onClick={() => onEdit(routine)}
+                className="cursor-pointer"
+              >
+                <Pencil className="mr-2 size-4" />
+                <span>編集</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setDisabled(true);
+                  onDelete(routine.id);
+                }}
+                className="text-destructive focus:text-destructive cursor-pointer"
+              >
+                <Trash2 className="mr-2 size-4" />
+                <span>削除</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </CardHeader>
         <CardContent className="pl-1.5">
           <CardDescription className="overflow-hidden text-nowrap text-ellipsis">
