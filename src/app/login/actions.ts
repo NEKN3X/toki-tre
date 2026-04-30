@@ -2,6 +2,7 @@
 
 import { actionClient } from "@/lib/safe-action";
 import { createClient } from "@/lib/supabase/server";
+import { getBaseUrl } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -20,7 +21,7 @@ export const logout = actionClient.action(async () => {
 export const googleLogin = actionClient.action(async () => {
   const supabase = await createClient();
 
-  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
+  const redirectTo = `${getBaseUrl()}/auth/callback`;
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
