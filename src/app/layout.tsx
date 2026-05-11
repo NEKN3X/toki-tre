@@ -2,6 +2,7 @@ import LogoutButton from "@/components/auth/logoutButton";
 import { Separator } from "@/components/ui/separator";
 import type { Metadata } from "next";
 import { M_PLUS_1_Code, Noto_Sans_JP } from "next/font/google";
+import Image from "next/image";
 import "./globals.css";
 
 const sans = Noto_Sans_JP({
