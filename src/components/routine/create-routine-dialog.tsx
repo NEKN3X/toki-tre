@@ -18,7 +18,10 @@ export default function CreateRoutineDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+      <DialogContent
+        className="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
+        style={{ overflow: "hidden" }}
+      >
         <RoutineForm
           title={"新しいルーティンを作成する"}
           description={""}
