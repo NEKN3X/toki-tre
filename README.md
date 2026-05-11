@@ -1,6 +1,6 @@
 # IfThenBuddy
 
-習慣化を助ける If-Thenプランニング（「もし（If）〜したら、（Then）〜する」）を管理・実行するためのWebアプリケーション
+「もし（If）〜したら、（Then）〜する」というルール・宣言を管理して、習慣化を助けるWebアプリケーション
 
 ## 技術スタック
 
@@ -8,4 +8,4 @@
 - Tailwind CSS
 - shadcn/ui
 - Supabase: 認証（Auth）およびデータベース（PostgreSQL）
-- Vercel: インフラおよびデプロイ
+- Vercel: デプロイ
