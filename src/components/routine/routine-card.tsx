@@ -53,7 +53,11 @@ export default function RoutineCard({
                 <EllipsisVerticalIcon className="size-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-32">
+            <DropdownMenuContent
+              align="end"
+              className="w-32"
+              onClick={(e) => e.stopPropagation()}
+            >
               <DropdownMenuItem
                 onClick={() => onEdit(routine)}
                 className="cursor-pointer"
