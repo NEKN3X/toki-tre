@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { RoutineForm } from "./create-routine-form";
+import { RoutineForm } from "./routine-form";
 
 export default function CreateRoutineDialog() {
   const [open, setOpen] = useState(false);
@@ -18,11 +18,9 @@ export default function CreateRoutineDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent
-        className="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
-        style={{ overflow: "hidden" }}
-      >
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <RoutineForm
+          mode="create"
           title={"新しいルーティンを作成する"}
           description={""}
           submitLabel={"作成する"}
