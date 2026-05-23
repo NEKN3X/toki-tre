@@ -1,16 +1,13 @@
-import { createRoutine } from "@/app/actions";
-import { routineSchema } from "@/lib/schema";
+"use client";
+
+import { createRoutine, updateRoutine } from "@/app/actions";
+import { routineSchema, routineWithIdSchema } from "@/lib/schema";
+import { Routine } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { FileText, Plus, Trash2, Video } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
-import {
-  Control,
-  Controller,
-  useFieldArray,
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { Control, Controller, type FieldValues, type Path, useFieldArray, useForm, useWatch } from "react-hook-form";
 import z from "zod";
 import { Button } from "../ui/button";
 import {
@@ -32,21 +29,30 @@ import {
 import { Separator } from "../ui/separator";
 import { Spinner } from "../ui/spinner";
 
-interface StepDynamicFieldsProps {
-  control: Control<z.infer<typeof routineSchema>>;
-  index: number;
-}
+const defaultStep = {
+  title: "",
+  icon: "🏋️",
+  type: "TEXT" as const,
+  description: "",
+  videoUrl: "",
+};
 
-function StepDynamicFields({ control, index }: StepDynamicFieldsProps) {
+function StepDynamicFields<TFieldValues extends FieldValues>({
+  control,
+  index,
+}: {
+  control: Control<TFieldValues>;
+  index: number;
+}) {
   const currentType = useWatch({
     control,
-    name: `steps.${index}.type`,
-  });
+    name: `steps.${index}.type` as Path<TFieldValues>,
+  }) as string;
 
   return (
     <div>
       <Controller
-        name={`steps.${index}.description`}
+        name={`steps.${index}.description` as Path<TFieldValues>}
         control={control}
         render={({ field: descField, fieldState }) => (
           <Field hidden={currentType !== "TEXT"}>
@@ -61,7 +67,7 @@ function StepDynamicFields({ control, index }: StepDynamicFieldsProps) {
         )}
       />
       <Controller
-        name={`steps.${index}.videoUrl`}
+        name={`steps.${index}.videoUrl` as Path<TFieldValues>}
         control={control}
         render={({ field: videoField, fieldState }) => (
           <Field
@@ -88,6 +94,8 @@ function StepDynamicFields({ control, index }: StepDynamicFieldsProps) {
 }
 
 interface RoutineFormProps {
+  mode: "create" | "edit";
+  routine?: Routine;
   title: string;
   description: string;
   submitLabel: string;
@@ -95,24 +103,40 @@ interface RoutineFormProps {
 }
 
 export function RoutineForm({
+  mode,
+  routine,
   title,
   description,
   submitLabel,
   onSubmit,
 }: RoutineFormProps) {
-  const form = useForm<z.infer<typeof routineSchema>>({
-    resolver: zodResolver(routineSchema),
-    defaultValues: {
-      title: "",
-      icon: "🌅",
-      description: "",
-      steps: [
-        { title: "", icon: "🏋️", type: "TEXT", description: "", videoUrl: "" },
-      ],
-    },
+  const action = mode === "edit" ? updateRoutine : createRoutine;
+  const schema = mode === "edit" ? routineWithIdSchema : routineSchema;
+
+  const defaultValues =
+    mode === "edit" && routine
+      ? {
+          ...routine,
+          description: routine.description || "",
+          steps: routine.steps.map((s) => ({
+            ...s,
+            description: s.description || "",
+            videoUrl: s.videoUrl || "",
+          })),
+        }
+      : {
+          title: "",
+          icon: "🌅",
+          description: "",
+          steps: [{ ...defaultStep }],
+        };
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: defaultValues as z.input<typeof schema>,
   });
 
-  const { execute, isExecuting } = useAction(createRoutine, {
+  const { execute, isExecuting } = useAction(action, {
     onSuccess: () => {
       form.reset();
       onSubmit?.();
@@ -349,11 +373,7 @@ export function RoutineForm({
             className="hover:bg-primary/5 hover:border-primary/50 h-16 w-full rounded-lg border-2 border-dashed transition-all"
             onClick={() =>
               append({
-                title: "",
-                icon: "🏋️",
-                type: "TEXT",
-                description: "",
-                videoUrl: "",
+                ...defaultStep,
               })
             }
           >

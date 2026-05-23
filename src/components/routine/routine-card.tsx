@@ -33,8 +33,8 @@ export default function RoutineCard({
   const [disabled, setDisabled] = useState(false);
 
   return (
-    <DialogTrigger className="rounded-xl" onClick={onClick} disabled={disabled}>
-      <Card className="flex-cool flex h-28 cursor-pointer justify-between p-4 text-left select-none hover:shadow-md focus:ring">
+    <DialogTrigger asChild className="rounded-xl" onClick={onClick} disabled={disabled}>
+      <Card className="flex-col flex h-28 cursor-pointer justify-between p-4 text-left select-none hover:shadow-md focus:ring">
         <CardHeader className="flex justify-between p-0">
           <div className="flex items-center justify-center gap-2">
             <span className="text-4xl">{routine.icon}</span>
@@ -43,11 +43,13 @@ export default function RoutineCard({
             </CardTitle>
           </div>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger
+              asChild
+              onClick={(e) => e.stopPropagation()}
+            >
               <Button
                 variant="ghost"
                 size="icon"
-                asChild
                 className="text-muted-foreground hover:text-foreground -mr-2 h-8 w-8"
               >
                 <EllipsisVerticalIcon className="size-5" />

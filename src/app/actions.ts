@@ -44,27 +44,29 @@ export const deleteRoutine = authClient
 export const updateRoutine = authClient
   .inputSchema(routineWithIdSchema)
   .action(async ({ parsedInput, ctx }) => {
-    await prisma.routine.update({
-      where: {
-        id: parsedInput.id,
-        userId: ctx.user.id,
-      },
-      data: {
-        title: parsedInput.title,
-        icon: parsedInput.icon,
-        description: parsedInput.description,
-        steps: {
-          deleteMany: {
-            routineId: parsedInput.id,
-          },
-          create: parsedInput.steps.map((step, index) => ({
-            ...step,
-            description: step.type === "TEXT" ? step.description : undefined,
-            videoUrl: step.type === "VIDEO" ? step.videoUrl : undefined,
-            order: index,
-          })),
+    await prisma.$transaction(async (tx) => {
+      await tx.routine.update({
+        where: {
+          id: parsedInput.id,
+          userId: ctx.user.id,
         },
-      },
+        data: {
+          title: parsedInput.title,
+          icon: parsedInput.icon,
+          description: parsedInput.description,
+          steps: {
+            deleteMany: {
+              routineId: parsedInput.id,
+            },
+            create: parsedInput.steps.map((step, index) => ({
+              ...step,
+              description: step.type === "TEXT" ? step.description : undefined,
+              videoUrl: step.type === "VIDEO" ? step.videoUrl : undefined,
+              order: index,
+            })),
+          },
+        },
+      });
     });
     updateTag("routines");
     return { success: true };
