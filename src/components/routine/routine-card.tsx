@@ -1,6 +1,9 @@
+import { deleteRoutine } from "@/app/actions";
 import { Routine } from "@/lib/types";
 import { EllipsisVerticalIcon, Pencil, Trash2 } from "lucide-react";
-import { MouseEventHandler, useState } from "react";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
+import { MouseEventHandler } from "react";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -21,17 +24,26 @@ import {
 interface Props {
   routine: Routine;
   onEdit: (routine: Routine) => void;
-  onDelete: (id: string) => void;
+  onDeleteSuccess?: (id: string) => void;
   onStart?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export default function RoutineCard({
   routine,
   onEdit,
-  onDelete,
+  onDeleteSuccess,
   onStart,
 }: Props) {
-  const [disabled, setDisabled] = useState(false);
+  const router = useRouter();
+
+  const { execute: deleteAction, isExecuting } = useAction(deleteRoutine, {
+    onSuccess: () => {
+      onDeleteSuccess?.(routine.id);
+    },
+    onError: () => {
+      router.refresh();
+    },
+  });
 
   return (
     <Card className="flex flex-col justify-between text-left select-none">
@@ -47,6 +59,7 @@ export default function RoutineCard({
             <Button
               variant="ghost"
               size="icon"
+              disabled={isExecuting}
               className="text-muted-foreground hover:text-foreground -mr-2 h-8 w-8"
             >
               <EllipsisVerticalIcon className="size-5" />
@@ -66,8 +79,9 @@ export default function RoutineCard({
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                setDisabled(true);
-                onDelete(routine.id);
+                if (confirm("このルーティンを削除しますか？")) {
+                  deleteAction({ id: routine.id });
+                }
               }}
               className="text-destructive focus:text-destructive cursor-pointer"
             >
@@ -85,7 +99,7 @@ export default function RoutineCard({
       <CardFooter className="flex gap-2">
         <DialogTrigger
           onClick={onStart}
-          disabled={disabled}
+          disabled={isExecuting}
           asChild
           className="flex-1"
         >

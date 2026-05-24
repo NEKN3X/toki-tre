@@ -1,69 +1,32 @@
 "use client";
 
-import { deleteRoutine } from "@/app/actions";
 import RoutineCard from "@/components/routine/routine-card";
 import RoutineDialog from "@/components/routine/routine-dialog";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useDialog } from "@/hooks/use-dialog";
 import { Routine } from "@/lib/types";
 import confetti from "canvas-confetti";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
 import {
   useCallback,
   useOptimistic,
-  useReducer,
   useRef,
   useTransition,
 } from "react";
 import CreateRoutineDialog from "../routine/create-routine-dialog";
 import EditRoutineDialog from "../routine/edit-routine-dialog";
 
-type DialogState =
-  | { mode: "idle" }
-  | { mode: "view"; routine: Routine }
-  | { mode: "edit"; routine: Routine }
-  | { mode: "create" };
-
-type DialogAction =
-  | { type: "OPEN_VIEW"; routine: Routine }
-  | { type: "OPEN_EDIT"; routine: Routine }
-  | { type: "OPEN_CREATE" }
-  | { type: "CLOSE" };
-
-function dialogReducer(_state: DialogState, action: DialogAction): DialogState {
-  switch (action.type) {
-    case "OPEN_VIEW":
-      return { mode: "view", routine: action.routine };
-    case "OPEN_EDIT":
-      return { mode: "edit", routine: action.routine };
-    case "OPEN_CREATE":
-      return { mode: "create" };
-    case "CLOSE":
-      return { mode: "idle" };
-    default:
-      return _state;
-  }
-}
-
 export default function HomePresentation({
   routines,
 }: {
   routines: Routine[];
 }) {
-  const router = useRouter();
-  const [dialog, dispatch] = useReducer(dialogReducer, { mode: "idle" });
+  const [dialog, dispatch] = useDialog();
   const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [, startTransition] = useTransition();
   const [optimisticRoutines, optimisticDeleteRoutine] = useOptimistic(
     routines,
     (state, routineId: string) => state.filter((r) => r.id !== routineId),
   );
-
-  const { execute: deleteAction } = useAction(deleteRoutine, {
-    onError: () => {
-      startTransition(() => router.refresh());
-    },
-  });
 
   const onOpenChange = useCallback(
     (open: boolean) => {
@@ -108,13 +71,10 @@ export default function HomePresentation({
                 key={routine.id}
                 routine={routine}
                 onEdit={() => dispatch({ type: "OPEN_EDIT", routine })}
-                onDelete={() => {
-                  if (confirm("このルーティンを削除しますか？")) {
-                    startTransition(() => {
-                      optimisticDeleteRoutine(routine.id);
-                      deleteAction({ id: routine.id });
-                    });
-                  }
+                onDeleteSuccess={(id) => {
+                  startTransition(() => {
+                    optimisticDeleteRoutine(id);
+                  });
                 }}
                 onStart={() => dispatch({ type: "OPEN_VIEW", routine })}
               />

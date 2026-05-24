@@ -1,9 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { authClient } from "@/lib/safe-action";
+import { actionClient, authClient } from "@/lib/safe-action";
 import { routineSchema, routineWithIdSchema } from "@/lib/schema";
-import { updateTag } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
+import { revalidatePath, updateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import z from "zod";
 
 export const createRoutine = authClient
@@ -40,6 +42,18 @@ export const deleteRoutine = authClient
     updateTag("routines");
     return { success: true };
   });
+
+export const logout = actionClient.action(async () => {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    throw new Error("Logout failed");
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/login");
+});
 
 export const updateRoutine = authClient
   .inputSchema(routineWithIdSchema)
