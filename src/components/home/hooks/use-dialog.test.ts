@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
-import { renderHook, act } from "@testing-library/react";
-import { useDialog, dialogReducer } from "./use-dialog";
-import type { DialogState, DialogAction } from "./use-dialog";
+import { act, renderHook } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { dialogReducer, useDialog } from "./use-dialog";
+import type { DialogAction, DialogState } from "./use-dialog";
 
 const mockRoutine = {
   id: "routine-1",

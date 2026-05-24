@@ -1,11 +1,11 @@
 "use client";
 
+import { logout } from "@/app/actions";
 import { SocialIcon } from "@/components/auth/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useAction } from "next-safe-action/hooks";
-import { logout } from "@/app/actions";
 import { demoLogin, googleLogin } from "./actions";
 
 export default function Home() {

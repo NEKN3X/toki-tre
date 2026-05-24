@@ -1,5 +1,5 @@
-import { useReducer } from "react";
 import { Routine } from "@/lib/types";
+import { useReducer } from "react";
 
 type DialogState =
   | { mode: "idle" }
@@ -13,7 +13,10 @@ type DialogAction =
   | { type: "OPEN_CREATE" }
   | { type: "CLOSE" };
 
-export function dialogReducer(_state: DialogState, action: DialogAction): DialogState {
+export function dialogReducer(
+  _state: DialogState,
+  action: DialogAction,
+): DialogState {
   switch (action.type) {
     case "OPEN_VIEW":
       return { mode: "view", routine: action.routine };
