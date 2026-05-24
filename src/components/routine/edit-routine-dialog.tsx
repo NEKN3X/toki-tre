@@ -1,15 +1,20 @@
 import { Routine } from "@/lib/types";
 import { Dialog, DialogContent } from "../ui/dialog";
-import { RoutineForm } from "./routine-form";
+import { RoutineForm } from "./form/routine-form";
 
 interface Props {
   routine?: Routine;
+  open: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
-export default function EditRoutineDialog({ routine, onOpenChange }: Props) {
+export default function EditRoutineDialog({
+  routine,
+  open,
+  onOpenChange,
+}: Props) {
   return (
-    <Dialog open={!!routine} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <RoutineForm
           mode="edit"

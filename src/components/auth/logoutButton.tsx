@@ -1,6 +1,6 @@
 "use client";
 
-import { logout } from "@/app/login/actions";
+import { logout } from "@/app/actions";
 import { useAction } from "next-safe-action/hooks";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";

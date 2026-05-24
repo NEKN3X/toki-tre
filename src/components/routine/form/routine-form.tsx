@@ -1,33 +1,38 @@
 "use client";
 
 import { createRoutine, updateRoutine } from "@/app/actions";
-import { routineSchema, routineWithIdSchema } from "@/lib/schema";
-import { Routine } from "@/lib/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
-import { FileText, Plus, Trash2, Video } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
-import { Control, Controller, type FieldValues, type Path, useFieldArray, useForm, useWatch } from "react-hook-form";
-import z from "zod";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
-import { Field, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+} from "@/components/ui/dialog";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Separator } from "../ui/separator";
-import { Spinner } from "../ui/spinner";
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
+import { routineSchema, routineWithIdSchema } from "@/lib/schema";
+import { Routine } from "@/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import EmojiPicker, { EmojiStyle, Theme } from "emoji-picker-react";
+import { Plus, Trash2 } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import z from "zod";
+import { StepDynamicFields } from "./step-dynamic-fields";
 
 const defaultStep = {
   title: "",
@@ -36,62 +41,6 @@ const defaultStep = {
   description: "",
   videoUrl: "",
 };
-
-function StepDynamicFields<TFieldValues extends FieldValues>({
-  control,
-  index,
-}: {
-  control: Control<TFieldValues>;
-  index: number;
-}) {
-  const currentType = useWatch({
-    control,
-    name: `steps.${index}.type` as Path<TFieldValues>,
-  }) as string;
-
-  return (
-    <div>
-      <Controller
-        name={`steps.${index}.description` as Path<TFieldValues>}
-        control={control}
-        render={({ field: descField, fieldState }) => (
-          <Field hidden={currentType !== "TEXT"}>
-            <div className="flex justify-between">
-              <FieldLabel className="flex gap-1 text-xs">
-                <FileText className="size-3" /> このステップの説明（任意）
-              </FieldLabel>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </div>
-            <Input {...descField} placeholder="意識するポイントなど" />
-          </Field>
-        )}
-      />
-      <Controller
-        name={`steps.${index}.videoUrl` as Path<TFieldValues>}
-        control={control}
-        render={({ field: videoField, fieldState }) => (
-          <Field
-            data-invalid={fieldState.invalid}
-            hidden={currentType !== "VIDEO"}
-          >
-            <div className="flex justify-between">
-              <FieldLabel className="flex items-center justify-center gap-1 text-xs">
-                <Video className="size-3" /> YouTube URL（必須）
-              </FieldLabel>
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} className="text-xs" />
-              )}
-            </div>
-            <Input
-              {...videoField}
-              placeholder="https://www.youtube.com/watch?v=..."
-            />
-          </Field>
-        )}
-      />
-    </div>
-  );
-}
 
 interface RoutineFormProps {
   mode: "create" | "edit";

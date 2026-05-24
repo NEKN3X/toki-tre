@@ -1,7 +1,4 @@
-import { Routine } from "@/lib/types";
-import { EllipsisVerticalIcon, Pencil, Trash2 } from "lucide-react";
-import { MouseEventHandler, useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,30 +6,31 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { DialogTrigger } from "../ui/dialog";
+} from "@/components/ui/card";
+import { DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import { Routine } from "@/lib/types";
+import { EllipsisVerticalIcon, Pencil, Trash2 } from "lucide-react";
+import { MouseEventHandler } from "react";
 
 interface Props {
   routine: Routine;
   onEdit: (routine: Routine) => void;
-  onDelete: (id: string) => void;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
+  onDelete?: (id: string) => void;
+  onStart?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export default function RoutineCard({
   routine,
   onEdit,
   onDelete,
-  onClick,
+  onStart,
 }: Props) {
-  const [disabled, setDisabled] = useState(false);
-
   return (
     <Card className="flex flex-col justify-between text-left select-none">
       <CardHeader className="flex justify-between">
@@ -66,8 +64,9 @@ export default function RoutineCard({
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
-                setDisabled(true);
-                onDelete(routine.id);
+                if (confirm("このルーティンを削除しますか？")) {
+                  onDelete?.(routine.id);
+                }
               }}
               className="text-destructive focus:text-destructive cursor-pointer"
             >
@@ -83,12 +82,7 @@ export default function RoutineCard({
         </CardDescription>
       </CardContent>
       <CardFooter className="flex gap-2">
-        <DialogTrigger
-          onClick={onClick}
-          disabled={disabled}
-          asChild
-          className="flex-1"
-        >
+        <DialogTrigger onClick={onStart} asChild className="flex-1">
           <Button>Start</Button>
         </DialogTrigger>
       </CardFooter>

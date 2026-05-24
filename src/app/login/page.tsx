@@ -1,11 +1,12 @@
 "use client";
 
-import { Icons } from "@/components/auth/icons";
+import { logout } from "@/app/actions";
+import { SocialIcon } from "@/components/auth/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useAction } from "next-safe-action/hooks";
-import { demoLogin, googleLogin, logout } from "./actions";
+import { demoLogin, googleLogin } from "./actions";
 
 export default function Home() {
   const { execute: handleLogout, isExecuting: isExecutingLogout } =
@@ -34,7 +35,7 @@ export default function Home() {
               onClick={() => handleGoogleLogin()}
               disabled={isExecuting}
             >
-              <Icons provider="google" />
+              <SocialIcon provider="google" />
               Google でログイン
             </Button>
             <Separator />
