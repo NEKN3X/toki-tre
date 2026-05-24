@@ -1,14 +1,16 @@
 import { Plus } from "lucide-react";
-import { useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { RoutineForm } from "./routine-form";
 
-export default function CreateRoutineDialog() {
-  const [open, setOpen] = useState(false);
+interface Props {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
 
+export default function CreateRoutineDialog({ open, onOpenChange }: Props) {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button
           size="icon"
@@ -24,7 +26,7 @@ export default function CreateRoutineDialog() {
           title={"新しいルーティンを作成する"}
           description={""}
           submitLabel={"作成する"}
-          onSubmit={() => setOpen(false)}
+          onSubmit={() => onOpenChange(false)}
         />
       </DialogContent>
     </Dialog>

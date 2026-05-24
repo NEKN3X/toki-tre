@@ -22,14 +22,14 @@ interface Props {
   routine: Routine;
   onEdit: (routine: Routine) => void;
   onDelete: (id: string) => void;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
+  onStart?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export default function RoutineCard({
   routine,
   onEdit,
   onDelete,
-  onClick,
+  onStart,
 }: Props) {
   const [disabled, setDisabled] = useState(false);
 
@@ -84,7 +84,7 @@ export default function RoutineCard({
       </CardContent>
       <CardFooter className="flex gap-2">
         <DialogTrigger
-          onClick={onClick}
+          onClick={onStart}
           disabled={disabled}
           asChild
           className="flex-1"
