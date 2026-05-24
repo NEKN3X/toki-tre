@@ -1,4 +1,4 @@
-import HomePresentation from "@/components/presentation/home";
+import HomePage from "@/components/home/page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { prisma } from "@/lib/db";
 import { createClient } from "@/lib/supabase/server";
@@ -35,7 +35,7 @@ async function RoutineGrid({ userId }: { userId: string }) {
     },
   });
 
-  return <HomePresentation routines={routines} />;
+  return <HomePage routines={routines} />;
 }
 
 function RoutineGridSkeleton() {
