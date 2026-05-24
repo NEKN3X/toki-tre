@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { RoutineForm } from "./routine-form";
+import { RoutineForm } from "./form/routine-form";
 
 interface Props {
   open: boolean;

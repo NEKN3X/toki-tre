@@ -1,10 +1,4 @@
-import { deleteRoutine } from "@/app/actions";
-import { Routine } from "@/lib/types";
-import { EllipsisVerticalIcon, Pencil, Trash2 } from "lucide-react";
-import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
-import { MouseEventHandler } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,39 +6,31 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { DialogTrigger } from "../ui/dialog";
+} from "@/components/ui/card";
+import { DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import { Routine } from "@/lib/types";
+import { EllipsisVerticalIcon, Pencil, Trash2 } from "lucide-react";
+import { MouseEventHandler } from "react";
 
 interface Props {
   routine: Routine;
   onEdit: (routine: Routine) => void;
-  onDeleteSuccess?: (id: string) => void;
+  onDelete?: (id: string) => void;
   onStart?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export default function RoutineCard({
   routine,
   onEdit,
-  onDeleteSuccess,
+  onDelete,
   onStart,
 }: Props) {
-  const router = useRouter();
-
-  const { execute: deleteAction, isExecuting } = useAction(deleteRoutine, {
-    onSuccess: () => {
-      onDeleteSuccess?.(routine.id);
-    },
-    onError: () => {
-      router.refresh();
-    },
-  });
-
   return (
     <Card className="flex flex-col justify-between text-left select-none">
       <CardHeader className="flex justify-between">
@@ -59,7 +45,6 @@ export default function RoutineCard({
             <Button
               variant="ghost"
               size="icon"
-              disabled={isExecuting}
               className="text-muted-foreground hover:text-foreground -mr-2 h-8 w-8"
             >
               <EllipsisVerticalIcon className="size-5" />
@@ -80,7 +65,7 @@ export default function RoutineCard({
             <DropdownMenuItem
               onClick={() => {
                 if (confirm("このルーティンを削除しますか？")) {
-                  deleteAction({ id: routine.id });
+                  onDelete?.(routine.id);
                 }
               }}
               className="text-destructive focus:text-destructive cursor-pointer"
@@ -97,12 +82,7 @@ export default function RoutineCard({
         </CardDescription>
       </CardContent>
       <CardFooter className="flex gap-2">
-        <DialogTrigger
-          onClick={onStart}
-          disabled={isExecuting}
-          asChild
-          className="flex-1"
-        >
+        <DialogTrigger onClick={onStart} asChild className="flex-1">
           <Button>Start</Button>
         </DialogTrigger>
       </CardFooter>

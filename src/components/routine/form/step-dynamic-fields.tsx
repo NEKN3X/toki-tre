@@ -1,9 +1,15 @@
 "use client";
 
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { FileText, Video } from "lucide-react";
-import { Control, Controller, type FieldValues, type Path, useWatch } from "react-hook-form";
-import { Field, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+import {
+  Control,
+  Controller,
+  type FieldValues,
+  type Path,
+  useWatch,
+} from "react-hook-form";
 
 export function StepDynamicFields<TFieldValues extends FieldValues>({
   control,

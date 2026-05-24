@@ -1,17 +1,18 @@
-import { Routine } from "@/lib/types";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { useReducer, useTransition } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
-import { Field, FieldLabel } from "../ui/field";
-import { Progress } from "../ui/progress";
-import { Spinner } from "../ui/spinner";
-import { YouTubePlayer } from "./youtube-player";
+} from "@/components/ui/dialog";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Progress } from "@/components/ui/progress";
+import { Spinner } from "@/components/ui/spinner";
+import { Routine } from "@/lib/types";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useReducer, useTransition } from "react";
+import { CompleteView } from "./complete-view";
+import { StepContent } from "./step-content";
 
 const progressInitialState = 0;
 const progressReducer = (
@@ -109,32 +110,9 @@ export default function RoutineDialog({
               </Button>
 
               <div className="w-full text-center">
-                {isComplete && (
-                  <div className="mt-10 flex aspect-video flex-auto flex-col justify-center gap-4 select-none">
-                    <div className="text-6xl">🎉</div>
-                    <h3 className="text-3xl font-bold">Great job!</h3>
-                    <p className="text-muted-foreground text-lg">
-                      You completed the session.
-                    </p>
-                  </div>
-                )}
-                {currentStep && !isComplete && currentStep.videoUrl && (
-                  <div className="flex flex-auto flex-col justify-center select-none">
-                    <div className="flex h-10 items-center justify-center gap-2 overflow-hidden">
-                      <span>{currentStep.icon}</span>
-                      <div>{currentStep.title}</div>
-                    </div>
-                    <YouTubePlayer youtubeUrl={currentStep.videoUrl} />
-                  </div>
-                )}
-                {currentStep && !isComplete && !currentStep.videoUrl && (
-                  <div className="mt-10 flex aspect-video flex-auto flex-col justify-center gap-6 select-none">
-                    <div className="text-6xl">{currentStep.icon}</div>
-                    <h3 className="text-3xl font-bold">{currentStep.title}</h3>
-                    <p className="text-muted-foreground text-lg">
-                      {currentStep.description}
-                    </p>
-                  </div>
+                {isComplete && <CompleteView />}
+                {currentStep && !isComplete && (
+                  <StepContent currentStep={currentStep} />
                 )}
               </div>
 

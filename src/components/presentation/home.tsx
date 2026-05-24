@@ -1,11 +1,14 @@
 "use client";
 
-import RoutineCard from "@/components/routine/routine-card";
-import RoutineDialog from "@/components/routine/routine-dialog";
+import { deleteRoutine } from "@/app/actions";
+import RoutineCard from "@/components/routine/card/routine-card";
+import RoutineDialog from "@/components/routine/dialog/routine-dialog";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useDialog } from "@/hooks/use-dialog";
 import { Routine } from "@/lib/types";
 import confetti from "canvas-confetti";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
 import {
   useCallback,
   useOptimistic,
@@ -14,6 +17,7 @@ import {
 } from "react";
 import CreateRoutineDialog from "../routine/create-routine-dialog";
 import EditRoutineDialog from "../routine/edit-routine-dialog";
+import { EmptyState } from "./empty-state";
 
 export default function HomePresentation({
   routines,
@@ -27,6 +31,12 @@ export default function HomePresentation({
     routines,
     (state, routineId: string) => state.filter((r) => r.id !== routineId),
   );
+  const router = useRouter();
+  const { execute: deleteAction } = useAction(deleteRoutine, {
+    onError: () => {
+      router.refresh();
+    },
+  });
 
   const onOpenChange = useCallback(
     (open: boolean) => {
@@ -55,14 +65,7 @@ export default function HomePresentation({
   return (
     <>
       {optimisticRoutines.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="text-muted-foreground text-lg">
-            まだルーティンがありません
-          </p>
-          <p className="text-muted-foreground text-sm">
-            右下の＋ボタンから作成しましょう
-          </p>
-        </div>
+        <EmptyState />
       ) : (
         <Dialog open={dialog.mode === "view"} onOpenChange={onOpenChange}>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
@@ -71,9 +74,10 @@ export default function HomePresentation({
                 key={routine.id}
                 routine={routine}
                 onEdit={() => dispatch({ type: "OPEN_EDIT", routine })}
-                onDeleteSuccess={(id) => {
+                onDelete={(id) => {
                   startTransition(() => {
                     optimisticDeleteRoutine(id);
+                    deleteAction({ id });
                   });
                 }}
                 onStart={() => dispatch({ type: "OPEN_VIEW", routine })}

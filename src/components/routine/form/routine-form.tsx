@@ -1,6 +1,29 @@
 "use client";
 
 import { createRoutine, updateRoutine } from "@/app/actions";
+import { Button } from "@/components/ui/button";
+import {
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
 import { routineSchema, routineWithIdSchema } from "@/lib/schema";
 import { Routine } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,25 +32,6 @@ import { Plus, Trash2 } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import z from "zod";
-import { Button } from "../ui/button";
-import {
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
-import { Field, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Separator } from "../ui/separator";
-import { Spinner } from "../ui/spinner";
 import { StepDynamicFields } from "./step-dynamic-fields";
 
 const defaultStep = {
