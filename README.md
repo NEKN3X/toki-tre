@@ -9,3 +9,5 @@
 - shadcn/ui
 - Supabase: 認証（Auth）およびデータベース（PostgreSQL）
 - Vercel: デプロイ
+- vitest: テスト
+- zod: スキーマバリデーション
